@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Project3-RollerCoasters\RollerCoasters-master\src\CallBacks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Project3-RollerCoasters\RollerCoasters-master\src\ControlPoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Project3-RollerCoasters\RollerCoasters-master\src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Project3-RollerCoasters\RollerCoasters-master\src\Track.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Project3-RollerCoasters\RollerCoasters-master\src\TrainView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Project3-RollerCoasters\RollerCoasters-master\src\TrainWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Project3-RollerCoasters\RollerCoasters-master\include\glad4.6\src\glad.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Project3-RollerCoasters\RollerCoasters-master\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Project3-RollerCoasters\RollerCoasters-master\src\CallBacks.H" />
+    <None Include="C:\Project3-RollerCoasters\RollerCoasters-master\src\ControlPoint.H" />
+    <None Include="C:\Project3-RollerCoasters\RollerCoasters-master\src\Object.H" />
+    <None Include="C:\Project3-RollerCoasters\RollerCoasters-master\src\Track.H" />
+    <None Include="C:\Project3-RollerCoasters\RollerCoasters-master\src\TrainView.H" />
+    <None Include="C:\Project3-RollerCoasters\RollerCoasters-master\src\TrainWindow.H" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{C3526494-4E7C-355F-9691-C0C280276732}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

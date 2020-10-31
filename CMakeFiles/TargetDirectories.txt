@@ -1,0 +1,4 @@
+C:/Project3-RollerCoasters/CMakeFiles/RollerCoasters.dir
+C:/Project3-RollerCoasters/CMakeFiles/Utilities.dir
+C:/Project3-RollerCoasters/CMakeFiles/ALL_BUILD.dir
+C:/Project3-RollerCoasters/CMakeFiles/ZERO_CHECK.dir
