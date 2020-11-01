@@ -110,7 +110,8 @@ TrainWindow(const int x, const int y)
 		splineBrowser->add("Linear");
 		splineBrowser->add("Cardinal Cubic");
 		splineBrowser->add("Cubic B-Spline");
-		splineBrowser->select(2);
+		splineBrowser->select(1);
+		
 
 		pty += 110;
 

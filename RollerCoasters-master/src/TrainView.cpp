@@ -331,7 +331,6 @@ setProjection()
 #endif
 	}
 }
-
 //************************************************************************
 //
 // * this draws all of the stuff in the world
@@ -350,9 +349,9 @@ void TrainView::drawStuff(bool doingShadows)
 	// don't draw the control points if you're driving 
 	// (otherwise you get sea-sick as you drive through them)
 	if (!tw->trainCam->value()) {
-		for(size_t i=0; i<m_pTrack->points.size(); ++i) {
+		for (size_t i = 0; i < m_pTrack->points.size(); ++i) {
 			if (!doingShadows) {
-				if ( ((int) i) != selectedCube)
+				if (((int)i) != selectedCube)
 					glColor3ub(240, 60, 60);
 				else
 					glColor3ub(240, 240, 30);
@@ -365,21 +364,14 @@ void TrainView::drawStuff(bool doingShadows)
 	// TODO: 
 	// call your own track drawing code
 	//####################################################################
-
-#ifdef EXAMPLE_SOLUTION
 	drawTrack(this, doingShadows);
-#endif
-
 	// draw the train
 	//####################################################################
 	// TODO: 
 	//	call your own train drawing code
 	//####################################################################
-#ifdef EXAMPLE_SOLUTION
-	// don't draw the train if you're looking out the front window
-	if (!tw->trainCam->value())
-		drawTrain(this, doingShadows);
-#endif
+	//if (!tw->trainCam->value())
+		//drawTrain(this, doingShadows);
 }
 
 // 
@@ -394,6 +386,102 @@ void TrainView::drawStuff(bool doingShadows)
 //		changed how control points are drawn, you might need to change this
 //########################################################################
 //========================================================================
+void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
+	if (TrainV->tw->splineBrowser->value() == 1) {
+		float DIVIDE_LINE = 20;
+		for (size_t i = 0; i < m_pTrack->points.size(); i++) {
+			// pos
+			Pnt3f cp_pos_p1 = m_pTrack->points[i].pos;
+			Pnt3f cp_pos_p2 = m_pTrack->points[(i + 1) % m_pTrack->points.size()].pos;
+			// orient
+			Pnt3f cp_orient_p1 = m_pTrack->points[i].orient;
+			Pnt3f cp_orient_p2 = m_pTrack->points[(i + 1) % m_pTrack->points.size()].orient;
+			float percent = 1.0f / DIVIDE_LINE;
+			float t = 0;
+			Pnt3f qt = (1 - t) * cp_pos_p1 + t * cp_pos_p2;
+			for (size_t j = 0; j < DIVIDE_LINE; j++) {
+				Pnt3f qt0 = qt;
+				t += percent;
+				qt = (1 - t) * cp_pos_p1 + t * cp_pos_p2;
+				Pnt3f qt1 = qt;
+				Pnt3f orient_t = (1 - t) * cp_orient_p1 + t * cp_orient_p2;
+				orient_t.normalize();
+				Pnt3f cross_t = (qt1 - qt0) * orient_t;
+				cross_t.normalize();
+				cross_t = cross_t * 2.5f;
+				if (!doingShadows) {
+					glColor3ub(77, 19, 0);
+				}
+				glBegin(GL_LINES);
+				glVertex3f(qt0.x + cross_t.x, qt0.y + cross_t.y, qt0.z + cross_t.z);
+				glVertex3f(qt1.x + cross_t.x, qt1.y + cross_t.y, qt1.z + cross_t.z);
+				glVertex3f(qt0.x - cross_t.x, qt0.y - cross_t.y, qt0.z - cross_t.z);
+				glVertex3f(qt1.x - cross_t.x, qt1.y - cross_t.y, qt1.z - cross_t.z);
+				glEnd();
+				glLineWidth(1);
+				if (j % 2 == 0) {
+					if (!doingShadows) {
+						glColor3ub(153, 102, 51);
+					}
+					glBegin(GL_QUADS);
+					glVertex3f(qt0.x + cross_t.x, qt0.y + cross_t.y, qt0.z + cross_t.z);
+					glVertex3f(qt1.x + cross_t.x, qt1.y + cross_t.y, qt1.z + cross_t.z);
+					glVertex3f(qt1.x - cross_t.x, qt1.y + cross_t.y, qt1.z - cross_t.z);
+					glVertex3f(qt0.x - cross_t.x, qt0.y + cross_t.y, qt0.z - cross_t.z);
+					glEnd();
+				}
+			}
+		}
+	}
+	else if (TrainV->tw->splineBrowser->value() == 2) {
+		float DIVIDE_LINE = 20;
+		for (size_t i = 0; i < m_pTrack->points.size(); i++) {
+			// pos
+			Pnt3f cp_pos_p1 = m_pTrack->points[i].pos;
+			Pnt3f cp_pos_p2 = m_pTrack->points[(i + 1) % m_pTrack->points.size()].pos;
+			Pnt3f cp_pos_p3 = m_pTrack->points[(i + 2) % m_pTrack->points.size()].pos;
+			Pnt3f cp_pos_p4 = m_pTrack->points[(i + 3) % m_pTrack->points.size()].pos;
+			// orient
+			Pnt3f cp_orient_p1 = m_pTrack->points[i].orient;
+			Pnt3f cp_orient_p2 = m_pTrack->points[(i + 1) % m_pTrack->points.size()].orient;
+			Pnt3f cp_orient_p3 = m_pTrack->points[(i + 2) % m_pTrack->points.size()].orient;
+			Pnt3f cp_orient_p4 = m_pTrack->points[(i + 3) % m_pTrack->points.size()].orient;
+			glm::mat4x4 P = {
+				{m_pTrack->points[i].pos.x,m_pTrack->points[(i + 1) % m_pTrack->points.size()].pos.x,m_pTrack->points[(i + 2) % m_pTrack->points.size()].pos.x,m_pTrack->points[(i + 3) % m_pTrack->points.size()].pos.x},
+				{m_pTrack->points[i].pos.y,m_pTrack->points[(i + 1) % m_pTrack->points.size()].pos.y,m_pTrack->points[(i + 2) % m_pTrack->points.size()].pos.x,m_pTrack->points[(i + 3) % m_pTrack->points.size()].pos.y},
+				{m_pTrack->points[i].pos.z,m_pTrack->points[(i + 1) % m_pTrack->points.size()].pos.z,m_pTrack->points[(i + 2) % m_pTrack->points.size()].pos.x,m_pTrack->points[(i + 3) % m_pTrack->points.size()].pos.z},
+				{1,1,1,1}
+			};
+			glm::mat4x4 O = {
+				{m_pTrack->points[i].orient.x,m_pTrack->points[(i + 1) % m_pTrack->points.size()].orient.x,m_pTrack->points[(i + 2) % m_pTrack->points.size()].orient.x,m_pTrack->points[(i + 3) % m_pTrack->points.size()].orient.x},
+				{m_pTrack->points[i].orient.y,m_pTrack->points[(i + 1) % m_pTrack->points.size()].orient.y,m_pTrack->points[(i + 2) % m_pTrack->points.size()].orient.y,m_pTrack->points[(i + 3) % m_pTrack->points.size()].orient.y},
+				{m_pTrack->points[i].orient.z,m_pTrack->points[(i + 1) % m_pTrack->points.size()].orient.z,m_pTrack->points[(i + 2) % m_pTrack->points.size()].orient.z,m_pTrack->points[(i + 3) % m_pTrack->points.size()].orient.z},
+				{1,1,1,1},
+			};
+			glm::mat4x4 M = {
+				{-1 / 6,3 / 6,-3 / 6,1 / 6},
+				{3 / 6,-6 / 6,0,4},
+				{-3 / 6,3 / 6,3 / 6,1 / 6},
+				{1 / 6,0,0,0}
+			};
+			float percent = 1.0f / DIVIDE_LINE;
+			float t = 0; 
+			for (size_t j = 0; j < DIVIDE_LINE; j++) {
+				t += percent;
+				glm::vec4 T = { pow(t,3),pow(t,2),t,0.0f };
+				glm::vec4 qtemp = P * M * T;
+				Pnt3f qt;
+				qt.x = qtemp.x;
+				qt.y = qtemp.y;
+				qt.z = qtemp.z;
+			}
+		}
+	}
+}
+
+//void TrainView::drawTrain(TrainView* train, bool doingShadows) {
+//}
+
 void TrainView::
 doPick()
 //========================================================================
