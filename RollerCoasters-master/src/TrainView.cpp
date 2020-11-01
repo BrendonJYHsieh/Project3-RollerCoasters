@@ -38,7 +38,6 @@
 #include "TrainWindow.H"
 #include "Utilities/3DUtils.H"
 
-
 #ifdef EXAMPLE_SOLUTION
 #	include "TrainExample/TrainExample.H"
 #endif
@@ -433,41 +432,59 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 			}
 		}
 	}
-	else if (TrainV->tw->splineBrowser->value() == 2) {
+	else {
 		float DIVIDE_LINE = 20;
 		for (size_t i = 0; i < m_pTrack->points.size(); i++) {
 			// pos
 			Pnt3f cp_pos_p1 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
 			Pnt3f cp_pos_p2 = m_pTrack->points[(i + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
-			Pnt3f cp_pos_p3 = m_pTrack->points[(i +1 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
-			Pnt3f cp_pos_p4 = m_pTrack->points[(i +2 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
+			Pnt3f cp_pos_p3 = m_pTrack->points[(i + 1 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
+			Pnt3f cp_pos_p4 = m_pTrack->points[(i + 2 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
 			// orient
-			Pnt3f cp_orient_p1 = m_pTrack->points[(i -1 + m_pTrack->points.size()) % m_pTrack->points.size()].orient;
+			Pnt3f cp_orient_p1 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()].orient;
 			Pnt3f cp_orient_p2 = m_pTrack->points[(i + m_pTrack->points.size()) % m_pTrack->points.size()].orient;
 			Pnt3f cp_orient_p3 = m_pTrack->points[(i + 1 + m_pTrack->points.size()) % m_pTrack->points.size()].orient;
 			Pnt3f cp_orient_p4 = m_pTrack->points[(i + 2 + m_pTrack->points.size()) % m_pTrack->points.size()].orient;
 			glm::mat4x4 P = {
-				{cp_pos_p1.x,cp_pos_p2.x,cp_pos_p3.x,cp_pos_p4.x},
-				{cp_pos_p1.y,cp_pos_p2.y,cp_pos_p3.y,cp_pos_p4.y},
-				{cp_pos_p1.z,cp_pos_p2.z,cp_pos_p3.z,cp_pos_p4.z},
-				{1,1,1,1}
+				{cp_pos_p1.x,cp_pos_p1.y,cp_pos_p1.z,1},
+				{cp_pos_p2.x,cp_pos_p2.y,cp_pos_p2.z,1},
+				{cp_pos_p3.x,cp_pos_p3.y,cp_pos_p3.z,1},
+				{cp_pos_p4.x,cp_pos_p4.y,cp_pos_p4.z,1}
 			};
 			glm::mat4x4 O = {
-				{cp_orient_p1.x,cp_orient_p2.x,cp_orient_p3.x,cp_orient_p4.x},
-				{cp_orient_p1.y,cp_orient_p2.y,cp_orient_p3.y,cp_orient_p4.y},
-				{cp_orient_p1.z,cp_orient_p2.z,cp_orient_p3.z,cp_orient_p4.z},
-				{1,1,1,1},
+				{cp_orient_p1.x,cp_orient_p1.y,cp_orient_p1.z,1},
+				{cp_orient_p2.x,cp_orient_p2.y,cp_orient_p2.z,1},
+				{cp_orient_p3.x,cp_orient_p3.y,cp_orient_p3.z,1},
+				{cp_orient_p4.x,cp_orient_p4.y,cp_orient_p4.z,1}
 			};
-			glm::mat4x4 M = {
-				{-1.0f / 6.0f,3.0f / 6.0f,-3.0f / 6.0f,1.0f / 6.0f},
-				{3.0f / 6.0f,-6.0f / 6.0f,0.0f,4.0f/6.0f},
-				{-3.0f / 6.0f,3.0f / 6.0f,3.0f / 6.0f,1.0f / 6.0f},
-				{1.0f / 6.0f,0.0f,0.0f,0.0f}
-			};
+			/*glm::mat4x4 M = {
+				{-1.0f,3.0f,-3.0f,1.0f},
+				{3.0f,-6.0f,0.0f,4.0f},
+				{-3.0f,3.0f,3.0f,1.0f},
+				{1.0f,0.0f,0.0f,0.0f}
+			};*/
+			glm::mat4x4 M;
+			if (TrainV->tw->splineBrowser->value() == 2) {
+				 M = {
+				{-1.0f,3.0f,-3.0f,1.0f},
+				{2.0f,-5.0f,4.0f,-1.0f},
+				{-1.0f,0.0f,1.0f,0.0f},
+				{0.0f,2.0f,0.0f,0.0f}
+				};
+				 M /= 2;
+			}
+			else {
+				M = {
+				{-1.0f,3.0f,-3.0f,1.0f},
+				{3.0f,-6.0f,3.0f,0.0f},
+				{-3.0f,0.0f,3.0f,0.0f},
+				{1.0f,4.0f,1.0f,0.0f}
+				};
+				M /= 6;
+			}
 			float percent = 1.0f / DIVIDE_LINE;
-			float t = 0; 
+			float t = 0;
 			for (size_t j = 0; j < DIVIDE_LINE; j++) {
-
 				glm::vec4 T0 = { pow(t,3),pow(t,2),t,1 };
 				glm::vec4 qtemp = P * M * T0;
 				glm::vec4 ot0 = O * M * T0;
@@ -475,7 +492,7 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 				t += percent;
 				glm::vec4 T1 = { pow(t,3),pow(t,2),t,1 };
 				qtemp = P * M * T1;
-				Pnt3f qt1(qtemp[0] ,qtemp[1],qtemp[2]);
+				Pnt3f qt1(qtemp[0], qtemp[1], qtemp[2]);
 				Pnt3f orient_t(ot0[0], ot0[1], ot0[2]);
 				orient_t.normalize();
 				Pnt3f cross_t = (qt1 - qt0) * orient_t;
