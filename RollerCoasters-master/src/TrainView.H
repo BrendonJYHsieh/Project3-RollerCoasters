@@ -67,6 +67,7 @@ class TrainView : public Fl_Gl_Window
 		void drawStuff(bool doingShadows=false);
 		void drawTrack(TrainView*, bool);
 		void drawTrain(TrainView*, bool);
+		void trainCamView(TrainView*, float);
 		// setup the projection - assuming that the projection stack has been
 		// cleared for you
 		void setProjection();

@@ -356,17 +356,36 @@ setProjection()
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		glRotatef(-90,1,0,0);
-	} 
-	// Or do the train view or other view here
-	//####################################################################
-	// TODO: 
-	// put code for train view projection here!	
-	//####################################################################
-	else {
-#ifdef EXAMPLE_SOLUTION
-		trainCamView(this,aspect);
-#endif
 	}
+	else {
+		trainCamView(this,aspect);
+	}
+}
+void TrainView::trainCamView(TrainView* train, float aspect) {
+	glClear(GL_DEPTH_BUFFER_BIT);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(120, aspect, 1, 500);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	float t = m_pTrack->trainU;
+	int i = floor(t);
+	t -= i;
+	ControlPoint p0 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
+	ControlPoint p1 = m_pTrack->points[(i + m_pTrack->points.size()) % m_pTrack->points.size()];
+	ControlPoint p2 = m_pTrack->points[(i + 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
+	ControlPoint p3 = m_pTrack->points[(i + 2 + m_pTrack->points.size()) % m_pTrack->points.size()];
+
+	Pnt3f train_ori_center = GMT(p0.orient, p1.orient, p2.orient, p3.orient, tw->splineBrowser->value(), t);
+	Pnt3f train_ori_forward = GMT(p0.orient, p1.orient, p2.orient, p3.orient, tw->splineBrowser->value(), t + 0.2);
+
+	Pnt3f train_center = GMT(p0.pos, p1.pos, p2.pos, p3.pos, tw->splineBrowser->value(), t) + train_ori_center * 2.0f;
+	Pnt3f train_forward = GMT(p0.pos, p1.pos, p2.pos, p3.pos, tw->splineBrowser->value(), t + 0.2) + train_ori_forward * 2.0f;
+	Pnt3f dir = train_forward - train_center;
+	Pnt3f up = train_forward * dir;
+	up.normalize();
+	gluLookAt(train_center.x, train_center.y, train_center.z,
+		train_forward.x, train_forward.y, train_forward.z, up.x, -up.y, up.z);
 }
 //************************************************************************
 //
@@ -491,16 +510,17 @@ void TrainView::drawTrain(TrainView* train, bool doingShadows) {
 	train_ori_end.normalize();
 	Pnt3f cross_t = (train_ori_end - train_ori_forward) * train_ori_center;
 	cross_t.normalize();
-	cross_t = cross_t * 5.0f;
+	cross_t = cross_t * 2.5f;
 	Pnt3f train_up_front = train_forward + train_ori_forward * 10.0f;
 	Pnt3f train_up_back = train_end + train_ori_end * 10.0f;
-	glColor3ub(23, 122, 222);
-	glBegin(GL_QUADS);//
+	glColor3ub(255, 255, 255);
+	glBegin(GL_QUADS);
 	glVertex3f((train_forward + cross_t).x, (train_forward + cross_t).y, (train_forward + cross_t).z);
 	glVertex3f((train_end + cross_t).x, (train_end + cross_t).y, (train_end + cross_t).z);
 	glVertex3f((train_end - cross_t).x, (train_end - cross_t).y, (train_end - cross_t).z);
 	glVertex3f((train_forward - cross_t).x, (train_forward - cross_t).y, (train_forward - cross_t).z);
 	glEnd();
+
 }
 
 void TrainView::
