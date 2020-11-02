@@ -473,7 +473,34 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 }
 
 void TrainView::drawTrain(TrainView* train, bool doingShadows) {
-
+	float t = m_pTrack->trainU;
+	int i = floor(t);
+	t -= i;
+	ControlPoint p0 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
+	ControlPoint p1 = m_pTrack->points[(i + m_pTrack->points.size()) % m_pTrack->points.size()];
+	ControlPoint p2 = m_pTrack->points[(i + 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
+	ControlPoint p3 = m_pTrack->points[(i + 2 + m_pTrack->points.size()) % m_pTrack->points.size()];
+	Pnt3f train_center = GMT(p0.pos, p1.pos, p2.pos, p3.pos, tw->splineBrowser->value(), t);
+	Pnt3f train_forward = GMT(p0.pos, p1.pos, p2.pos, p3.pos, tw->splineBrowser->value(), t + 0.2);
+	Pnt3f train_end = GMT(p0.pos, p1.pos, p2.pos, p3.pos, tw->splineBrowser->value(), t - 0.2);
+	Pnt3f train_ori_center = GMT(p0.orient, p1.orient, p2.orient, p3.orient, tw->splineBrowser->value(), t);
+	Pnt3f train_ori_forward = GMT(p0.orient, p1.orient, p2.orient, p3.orient, tw->splineBrowser->value(), t + 0.2);
+	Pnt3f train_ori_end = GMT(p0.orient, p1.orient, p2.orient, p3.orient, tw->splineBrowser->value(), t - 0.2);
+	train_ori_center.normalize();
+	train_ori_forward.normalize();
+	train_ori_end.normalize();
+	Pnt3f cross_t = (train_ori_end - train_ori_forward) * train_ori_center;
+	cross_t.normalize();
+	cross_t = cross_t * 5.0f;
+	Pnt3f train_up_front = train_forward + train_ori_forward * 10.0f;
+	Pnt3f train_up_back = train_end + train_ori_end * 10.0f;
+	glColor3ub(23, 122, 222);
+	glBegin(GL_QUADS);//
+	glVertex3f((train_forward + cross_t).x, (train_forward + cross_t).y, (train_forward + cross_t).z);
+	glVertex3f((train_end + cross_t).x, (train_end + cross_t).y, (train_end + cross_t).z);
+	glVertex3f((train_end - cross_t).x, (train_end - cross_t).y, (train_end - cross_t).z);
+	glVertex3f((train_forward - cross_t).x, (train_forward - cross_t).y, (train_forward - cross_t).z);
+	glEnd();
 }
 
 void TrainView::
