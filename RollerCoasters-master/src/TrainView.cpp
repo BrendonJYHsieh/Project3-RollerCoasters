@@ -83,7 +83,9 @@ Pnt3f GMT(Pnt3f p1, Pnt3f p2, Pnt3f p3, Pnt3f p4, float mode, float t) {
 	glm::vec4 result = G * M * T;
 	return Pnt3f(result[0], result[1], result[2]);
 }
-
+void glVertex3f_Simplify(Pnt3f q0) {
+	glVertex3f(q0.x,q0.y,q0.z);
+}
 //************************************************************************
 //
 // * Constructor to set up the GL window
@@ -444,7 +446,7 @@ void TrainView::drawStuff(bool doingShadows)
 //########################################################################
 //========================================================================
 void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
-	float DIVIDE_LINE = 20;
+	float DIVIDE_LINE = 30;
 	for (size_t i = 0; i < m_pTrack->points.size(); i++) {
 		// pos
 		Pnt3f cp_pos_p1 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
@@ -463,10 +465,12 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 			Pnt3f qt0=GMT(cp_pos_p1, cp_pos_p2, cp_pos_p3, cp_pos_p4, TrainV->tw->splineBrowser->value(), t);
 			t += percent;
 			Pnt3f qt1 = GMT(cp_pos_p1, cp_pos_p2, cp_pos_p3, cp_pos_p4, TrainV->tw->splineBrowser->value(), t);
-			orient_t.normalize();
 			Pnt3f cross_t = (qt1 - qt0) * orient_t;
 			cross_t.normalize();
+			orient_t = cross_t * (qt1 - qt0);
+			orient_t.normalize();
 			cross_t = cross_t * 2.5f;
+			
 			if (!doingShadows) {
 				glColor3ub(77, 19, 0);
 			}
@@ -482,20 +486,35 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 				if (!doingShadows) {
 					glColor3ub(153, 102, 51);
 				}
-				cross_t.x *= 2;
-				cross_t.z *= 2;
 				glBegin(GL_QUADS);
-				glVertex3f(qt0.x + cross_t.x, qt0.y + cross_t.y, qt0.z + cross_t.z);
-				glVertex3f(qt1.x + cross_t.x, qt1.y + cross_t.y, qt1.z + cross_t.z);
-				glVertex3f(qt1.x - cross_t.x, qt1.y + cross_t.y, qt1.z - cross_t.z);
-				glVertex3f(qt0.x - cross_t.x, qt0.y + cross_t.y, qt0.z - cross_t.z);
+				glVertex3f_Simplify(qt0+cross_t);
+				glVertex3f_Simplify(qt1+cross_t);
+				glVertex3f_Simplify(qt1 - cross_t);
+				glVertex3f_Simplify(qt0 - cross_t);
 				glEnd();
-
 				glBegin(GL_QUADS);
-				glVertex3f(qt0.x + cross_t.x, qt0.y - cross_t.y, qt0.z + cross_t.z);
-				glVertex3f(qt1.x + cross_t.x, qt1.y - cross_t.y, qt1.z + cross_t.z);
-				glVertex3f(qt1.x - cross_t.x, qt1.y - cross_t.y, qt1.z - cross_t.z);
-				glVertex3f(qt0.x - cross_t.x, qt0.y - cross_t.y, qt0.z - cross_t.z);
+				glVertex3f_Simplify(qt0- orient_t + cross_t);
+				glVertex3f_Simplify(qt1- orient_t + cross_t);
+				glVertex3f_Simplify(qt1- orient_t - cross_t);
+				glVertex3f_Simplify(qt0- orient_t - cross_t);
+				glEnd();
+				glBegin(GL_QUADS);
+				glVertex3f_Simplify(qt0  + cross_t);
+				glVertex3f_Simplify(qt0  - cross_t);
+				glVertex3f_Simplify(qt0 - orient_t - cross_t);
+				glVertex3f_Simplify(qt0 - orient_t + cross_t);
+				glEnd();
+				glBegin(GL_QUADS);
+				glVertex3f_Simplify(qt1 + cross_t);
+				glVertex3f_Simplify(qt1 - cross_t);
+				glVertex3f_Simplify(qt1 - orient_t - cross_t);
+				glVertex3f_Simplify(qt1 - orient_t + cross_t);
+				glEnd();
+				glBegin(GL_QUADS);
+				glVertex3f_Simplify(qt1 - cross_t);
+				glVertex3f_Simplify(qt0 - cross_t);
+				glVertex3f_Simplify(qt0 - orient_t - cross_t);
+				glVertex3f_Simplify(qt1 - orient_t - cross_t);
 				glEnd();
 			}
 		}
@@ -513,29 +532,26 @@ void TrainView::drawTrain(TrainView* train, bool doingShadows) {
 	ControlPoint p2 = m_pTrack->points[(i + 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
 	ControlPoint p3 = m_pTrack->points[(i + 2 + m_pTrack->points.size()) % m_pTrack->points.size()];
 
-	Pnt3f train_forward = GMT(p0.pos, p1.pos, p2.pos, p3.pos, tw->splineBrowser->value(), t);
-	Pnt3f train_end = GMT(p0.pos, p1.pos, p2.pos, p3.pos, tw->splineBrowser->value(), t - percent);
+	Pnt3f q1 = GMT(p0.pos, p1.pos, p2.pos, p3.pos, tw->splineBrowser->value(), t);
+	Pnt3f q0 = GMT(p0.pos, p1.pos, p2.pos, p3.pos, tw->splineBrowser->value(), t - percent);
 
-	Pnt3f train_ori_forward = GMT(p0.orient, p1.orient, p2.orient, p3.orient, tw->splineBrowser->value(), t);
-	Pnt3f train_ori_end = GMT(p0.orient, p1.orient, p2.orient, p3.orient, tw->splineBrowser->value(), t - percent);
-	Pnt3f cross_t = (train_forward - train_end)* train_ori_end;
-
-	train_ori_forward.normalize();
-	train_ori_end.normalize();
-	
+	Pnt3f o1 = GMT(p0.orient, p1.orient, p2.orient, p3.orient, tw->splineBrowser->value(), t);
+	Pnt3f o0 = GMT(p0.orient, p1.orient, p2.orient, p3.orient, tw->splineBrowser->value(), t - percent);
+	Pnt3f cross_t = (q1 - q0)* o0;
 	cross_t.normalize();
+	Pnt3f orient = cross_t * (q1 - q0);
 	cross_t = cross_t * 2.5f;
-	//Pnt3f train_up_front = train_forward + train_ori_forward * 10.0f;
-	//Pnt3f train_up_back = train_end + train_ori_end * 10.0f;
-	train_forward.y += 5;
+	orient.normalize();
+	
 	if (!doingShadows) {
 		glColor3ub(255, 255, 255);
 	}
+	orient.y += 5;
 	glBegin(GL_QUADS);
-	glVertex3f((train_forward).x+cross_t.x, (train_forward).y+ cross_t.y ,(train_forward).z+ cross_t.z);
-	glVertex3f((train_forward).x + cross_t.x, (train_forward).y + cross_t.y, (train_forward).z + cross_t.z);
-	glVertex3f((train_forward).x - cross_t.x, (train_forward).y - cross_t.y, (train_forward).z - cross_t.z);
-	glVertex3f((train_forward).x - cross_t.x, (train_forward).y - cross_t.y, (train_forward).z - cross_t.z);
+	glVertex3f_Simplify(q1-cross_t + orient);
+	glVertex3f_Simplify(q1 + cross_t + orient);
+	glVertex3f_Simplify(q0 + cross_t + orient);
+	glVertex3f_Simplify(q0 - cross_t + orient);
 	glEnd();
 	
 	//glBegin(GL_QUADS);
