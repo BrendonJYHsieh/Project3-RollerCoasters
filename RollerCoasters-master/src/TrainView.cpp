@@ -33,7 +33,7 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include "GL/glu.h"
-
+#include <cmath>
 #include "TrainView.H"
 #include "TrainWindow.H"
 #include "Utilities/3DUtils.H"
@@ -446,7 +446,7 @@ void TrainView::drawStuff(bool doingShadows)
 //########################################################################
 //========================================================================
 void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
-	float DIVIDE_LINE = 30;
+	float DIVIDE_LINE = 20;
 	for (size_t i = 0; i < m_pTrack->points.size(); i++) {
 		// pos
 		Pnt3f cp_pos_p1 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
@@ -476,10 +476,10 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 			}
 			//cout << cross_t.y << endl;
 			glBegin(GL_LINES);
-			glVertex3f(qt0.x + cross_t.x, qt0.y + cross_t.y, qt0.z + cross_t.z);
-			glVertex3f(qt1.x + cross_t.x, qt1.y + cross_t.y, qt1.z + cross_t.z);
-			glVertex3f(qt0.x - cross_t.x, qt0.y - cross_t.y, qt0.z - cross_t.z);
-			glVertex3f(qt1.x - cross_t.x, qt1.y - cross_t.y, qt1.z - cross_t.z);
+			glVertex3f_Simplify(qt0 + cross_t);
+			glVertex3f_Simplify(qt1 + cross_t);
+			glVertex3f_Simplify(qt0 - cross_t);
+			glVertex3f_Simplify(qt1 - cross_t);
 			glEnd();
 			glLineWidth(1);
 			if (j % 2 == 0) {
@@ -521,79 +521,81 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 	}
 }
 
-void TrainView::drawTrain(TrainView* train, bool doingShadows) {
+void TrainView::drawTrain(TrainView* TrainV, bool doingShadows) {
 	float DIVIDE_LINE = 20.0f;
 	float percent = 1.0f / DIVIDE_LINE;
 	float t = m_pTrack->trainU;
 	int i = floor(t);
 	t -= i;
-	ControlPoint p0 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
-	ControlPoint p1 = m_pTrack->points[(i + m_pTrack->points.size()) % m_pTrack->points.size()];
-	ControlPoint p2 = m_pTrack->points[(i + 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
-	ControlPoint p3 = m_pTrack->points[(i + 2 + m_pTrack->points.size()) % m_pTrack->points.size()];
+	Pnt3f cp_pos_p1 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
+	Pnt3f cp_pos_p2 = m_pTrack->points[(i + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
+	Pnt3f cp_pos_p3 = m_pTrack->points[(i + 1 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
+	Pnt3f cp_pos_p4 = m_pTrack->points[(i + 2 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
+	// orient
+	Pnt3f cp_orient_p1 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()].orient;
+	Pnt3f cp_orient_p2 = m_pTrack->points[(i + m_pTrack->points.size()) % m_pTrack->points.size()].orient;
+	Pnt3f cp_orient_p3 = m_pTrack->points[(i + 1 + m_pTrack->points.size()) % m_pTrack->points.size()].orient;
+	Pnt3f cp_orient_p4 = m_pTrack->points[(i + 2 + m_pTrack->points.size()) % m_pTrack->points.size()].orient;
 
-	Pnt3f q1 = GMT(p0.pos, p1.pos, p2.pos, p3.pos, tw->splineBrowser->value(), t);
-	Pnt3f q0 = GMT(p0.pos, p1.pos, p2.pos, p3.pos, tw->splineBrowser->value(), t - percent);
-
-	Pnt3f o1 = GMT(p0.orient, p1.orient, p2.orient, p3.orient, tw->splineBrowser->value(), t);
-	Pnt3f o0 = GMT(p0.orient, p1.orient, p2.orient, p3.orient, tw->splineBrowser->value(), t - percent);
-	Pnt3f cross_t = (q1 - q0)* o0;
+	Pnt3f orient_t = GMT(cp_orient_p1, cp_orient_p2, cp_orient_p3, cp_orient_p4, TrainV->tw->splineBrowser->value(), t);
+	Pnt3f qt0 = GMT(cp_pos_p1, cp_pos_p2, cp_pos_p3, cp_pos_p4, TrainV->tw->splineBrowser->value(), t);
+	t += percent;
+	Pnt3f qt1 = GMT(cp_pos_p1, cp_pos_p2, cp_pos_p3, cp_pos_p4, TrainV->tw->splineBrowser->value(), t);
+	Pnt3f cross_t = (qt1 - qt0) * orient_t;
 	cross_t.normalize();
-	Pnt3f orient = cross_t * (q1 - q0);
+	orient_t = cross_t * (qt1 - qt0);
+	orient_t.normalize();
 	cross_t = cross_t * 2.5f;
-	orient.normalize();
-	
+	Pnt3f up = orient_t * 5;
+	Pnt3f forward = (qt1 - qt0);
+	forward.normalize();
+	forward =forward * 10;
+
 	if (!doingShadows) {
 		glColor3ub(255, 255, 255);
 	}
-	orient.y += 5;
+	//上
 	glBegin(GL_QUADS);
-	glVertex3f_Simplify(q1-cross_t + orient);
-	glVertex3f_Simplify(q1 + cross_t + orient);
-	glVertex3f_Simplify(q0 + cross_t + orient);
-	glVertex3f_Simplify(q0 - cross_t + orient);
+	glVertex3f_Simplify(qt0 + cross_t+up);
+	glVertex3f_Simplify(qt0 +forward + cross_t+up);
+	glVertex3f_Simplify(qt0+forward- cross_t+up);
+	glVertex3f_Simplify(qt0 - cross_t+up);
 	glEnd();
-	
-	//glBegin(GL_QUADS);
-	//glVertex3f((train_forward).x-5, (train_forward).y-5, (train_forward).z-5);
-	//glVertex3f((train_forward).x + 5, (train_forward).y - 5, (train_forward).z - 5);
-	//glVertex3f((train_forward).x + 5, (train_forward).y + 5, (train_forward).z - 5);
-	//glVertex3f((train_forward).x - 5, (train_forward).y + 5, (train_forward).z - 5);
-	//glEnd();
-	//glBegin(GL_QUADS);
-	//glVertex3f((train_forward).x - 5, (train_forward).y - 5, (train_forward).z + 5);
-	//glVertex3f((train_forward).x + 5, (train_forward).y - 5, (train_forward).z + 5);
-	//glVertex3f((train_forward).x + 5, (train_forward).y + 5, (train_forward).z + 5);
-	//glVertex3f((train_forward).x - 5, (train_forward).y + 5, (train_forward).z + 5);
-	//glEnd();
-	////上
-	//glBegin(GL_QUADS);
-	//glVertex3f((train_forward).x - 5, (train_forward).y + 5, (train_forward).z - 5);
-	//glVertex3f((train_forward).x + 5, (train_forward).y + 5, (train_forward).z - 5);
-	//glVertex3f((train_forward).x + 5, (train_forward).y + 5, (train_forward).z + 5);
-	//glVertex3f((train_forward).x - 5, (train_forward).y + 5, (train_forward).z + 5);
-	//glEnd();
-	////下
-	//glBegin(GL_QUADS);
-	//glVertex3f((train_forward).x - 5, (train_forward).y - 5, (train_forward).z - 5);
-	//glVertex3f((train_forward).x + 5, (train_forward).y - 5, (train_forward).z - 5);
-	//glVertex3f((train_forward).x + 5, (train_forward).y - 5, (train_forward).z + 5);
-	//glVertex3f((train_forward).x - 5, (train_forward).y - 5, (train_forward).z + 5);
-	//glEnd();
-
-	//glBegin(GL_QUADS);
-	//glVertex3f((train_forward).x + 5, (train_forward).y - 5, (train_forward).z - 5);
-	//glVertex3f((train_forward).x + 5, (train_forward).y + 5, (train_forward).z - 5);
-	//glVertex3f((train_forward).x + 5, (train_forward).y + 5, (train_forward).z + 5);
-	//glVertex3f((train_forward).x + 5, (train_forward).y - 5, (train_forward).z + 5);
-	//glEnd();
-
-	//glBegin(GL_QUADS);
-	//glVertex3f((train_forward).x - 5, (train_forward).y - 5, (train_forward).z - 5);
-	//glVertex3f((train_forward).x - 5, (train_forward).y + 5, (train_forward).z - 5);
-	//glVertex3f((train_forward).x - 5, (train_forward).y + 5, (train_forward).z + 5);
-	//glVertex3f((train_forward).x - 5, (train_forward).y - 5, (train_forward).z + 5);
-	//glEnd();
+	//下
+	glBegin(GL_QUADS);
+	glVertex3f_Simplify(qt0 + cross_t);
+	glVertex3f_Simplify(qt0 + forward + cross_t);
+	glVertex3f_Simplify(qt0 + forward - cross_t);
+	glVertex3f_Simplify(qt0 - cross_t);
+	glEnd();
+	//前
+	glBegin(GL_QUADS);
+	glVertex3f_Simplify(qt0 + forward - cross_t + up);
+	glVertex3f_Simplify(qt0 + forward + cross_t + up);
+	glVertex3f_Simplify(qt0 + forward + cross_t);
+	glVertex3f_Simplify(qt0 + forward - cross_t);
+	glEnd();
+	//後
+	glBegin(GL_QUADS);
+	glVertex3f_Simplify(qt0  - cross_t + up);
+	glVertex3f_Simplify(qt0  + cross_t + up);
+	glVertex3f_Simplify(qt0  + cross_t);
+	glVertex3f_Simplify(qt0  - cross_t);
+	glEnd();
+	//左
+	glBegin(GL_QUADS);
+	glVertex3f_Simplify(qt0 + forward - cross_t + up);
+	glVertex3f_Simplify(qt0 + forward - cross_t);
+	glVertex3f_Simplify(qt0 - cross_t);
+	glVertex3f_Simplify(qt0 - cross_t+up);
+	glEnd();
+	//右
+	glBegin(GL_QUADS);
+	glVertex3f_Simplify(qt0 + forward + cross_t + up);
+	glVertex3f_Simplify(qt0 + forward + cross_t);
+	glVertex3f_Simplify(qt0 + cross_t);
+	glVertex3f_Simplify(qt0 + cross_t + up);
+	glEnd();
 }
 
 void TrainView::
