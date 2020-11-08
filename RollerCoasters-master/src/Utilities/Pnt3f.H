@@ -43,7 +43,13 @@ class Pnt3f {
 		// from an array 
 		Pnt3f(const float*);			
 		// copy constructor created by default
-		// Pnt3f(const Pnt3f&);		
+		// Pnt3f(const Pnt3f&);
+		Pnt3f& operator=(const Pnt3f& temp) {
+			this->x = temp.x;
+			this->y = temp.y;
+			this->z = temp.z;
+			return *this;
+		}
 
 	public:
 		// if you want to treat this thing as a C vector (point to float)

@@ -513,6 +513,7 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 		Pnt3f cp_orient_p4 = m_pTrack->points[(i + 2 + m_pTrack->points.size()) % m_pTrack->points.size()].orient;
 		float percent = 1.0f / DIVIDE_LINE;
 		float t = 0;
+		Pnt3f lastqt;
 		for (size_t j = 0; j < DIVIDE_LINE; j++) {
 			Pnt3f orient_t= GMT(cp_orient_p1, cp_orient_p2, cp_orient_p3, cp_orient_p4,TrainV->tw->splineBrowser->value(), t);
 			Pnt3f qt0=GMT(cp_pos_p1, cp_pos_p2, cp_pos_p3, cp_pos_p4, TrainV->tw->splineBrowser->value(), t);
@@ -527,14 +528,22 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 			if (!doingShadows) {
 				glColor3ub(77, 19, 0);
 			}
+			glLineWidth(4);
 			glBegin(GL_LINES);
 			glVertex3f_Simplify(qt0 + cross_t);
 			glVertex3f_Simplify(qt1 + cross_t);
 			glVertex3f_Simplify(qt0 - cross_t);
 			glVertex3f_Simplify(qt1 - cross_t);
 			glEnd();
-			glLineWidth(4);
-			
+			//¸É»ôÅK­yªºÂ_µõ³B
+			if (j != 0) {
+				glBegin(GL_LINES);
+				glVertex3f_Simplify(lastqt + cross_t);
+				glVertex3f_Simplify(qt1 + cross_t);
+				glVertex3f_Simplify(lastqt - cross_t);
+				glVertex3f_Simplify(qt1 - cross_t);
+				glEnd();
+			}	
 			ArcLength += sqrt(forward.x * forward.x + forward.y * forward.y + forward.z * forward.z);
 
 			if (j % 2 == 0) {
@@ -543,6 +552,7 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 				}
 				DrawSleeper(qt0, qt1, cross_t, orient_t);
 			}
+			lastqt = qt0;
 		}
 	}
 }
