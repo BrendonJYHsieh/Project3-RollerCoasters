@@ -105,6 +105,39 @@ void initPosLight() {
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, yellowAmbientDiffuse);
 	glLightfv(GL_LIGHT1, GL_POSITION, position);
 }
+
+void DrawSleeper(Pnt3f qt0, Pnt3f qt1, Pnt3f cross_t,Pnt3f orient_t) {
+	glBegin(GL_QUADS);
+	glVertex3f_Simplify(qt0 + cross_t);
+	glVertex3f_Simplify(qt1 + cross_t);
+	glVertex3f_Simplify(qt1 - cross_t);
+	glVertex3f_Simplify(qt0 - cross_t);
+	glEnd();
+	glBegin(GL_QUADS);
+	glVertex3f_Simplify(qt0 - orient_t + cross_t);
+	glVertex3f_Simplify(qt1 - orient_t + cross_t);
+	glVertex3f_Simplify(qt1 - orient_t - cross_t);
+	glVertex3f_Simplify(qt0 - orient_t - cross_t);
+	glEnd();
+	glBegin(GL_QUADS);
+	glVertex3f_Simplify(qt0 + cross_t);
+	glVertex3f_Simplify(qt0 - cross_t);
+	glVertex3f_Simplify(qt0 - orient_t - cross_t);
+	glVertex3f_Simplify(qt0 - orient_t + cross_t);
+	glEnd();
+	glBegin(GL_QUADS);
+	glVertex3f_Simplify(qt1 + cross_t);
+	glVertex3f_Simplify(qt1 - cross_t);
+	glVertex3f_Simplify(qt1 - orient_t - cross_t);
+	glVertex3f_Simplify(qt1 - orient_t + cross_t);
+	glEnd();
+	glBegin(GL_QUADS);
+	glVertex3f_Simplify(qt1 - cross_t);
+	glVertex3f_Simplify(qt0 - cross_t);
+	glVertex3f_Simplify(qt0 - orient_t - cross_t);
+	glVertex3f_Simplify(qt1 - orient_t - cross_t);
+	glEnd();
+}
 //************************************************************************
 //
 // * Constructor to set up the GL window
@@ -305,7 +338,7 @@ void TrainView::draw()
 	GLfloat blueLight[]			= {.1f,.1f,.3f,1.0};
 	GLfloat grayLight[]			= {.3f, .3f, .3f, 1.0};
 
-	glLightfv(GL_LIGHT0, GL_POSITION, lightPosition1);
+	/*glLightfv(GL_LIGHT0, GL_POSITION, lightPosition1);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, whiteLight);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, grayLight);
 
@@ -313,7 +346,7 @@ void TrainView::draw()
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, yellowLight);
 
 	glLightfv(GL_LIGHT2, GL_POSITION, lightPosition3);
-	glLightfv(GL_LIGHT2, GL_DIFFUSE, blueLight);
+	glLightfv(GL_LIGHT2, GL_DIFFUSE, blueLight);*/
 
 
 
@@ -467,7 +500,6 @@ void TrainView::drawStuff(bool doingShadows)
 //########################################################################
 //========================================================================
 void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
-	float DIVIDE_LINE = 20;
 	for (size_t i = 0; i < m_pTrack->points.size(); i++) {
 		// pos
 		Pnt3f cp_pos_p1 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
@@ -491,6 +523,7 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 			orient_t = cross_t * (qt1 - qt0);
 			orient_t.normalize();
 			cross_t = cross_t * 2.5f;
+			Pnt3f forward = qt1 - qt0;
 			if (!doingShadows) {
 				glColor3ub(77, 19, 0);
 			}
@@ -500,48 +533,21 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 			glVertex3f_Simplify(qt0 - cross_t);
 			glVertex3f_Simplify(qt1 - cross_t);
 			glEnd();
-			glLineWidth(1);
+			glLineWidth(4);
+			
+			ArcLength += sqrt(forward.x * forward.x + forward.y * forward.y + forward.z * forward.z);
+
 			if (j % 2 == 0) {
 				if (!doingShadows) {
-					glColor3ub(153, 102, 51);
+					glColor3ub(101, 50, 0);
 				}
-				glBegin(GL_QUADS);
-				glVertex3f_Simplify(qt0+cross_t);
-				glVertex3f_Simplify(qt1+cross_t);
-				glVertex3f_Simplify(qt1 - cross_t);
-				glVertex3f_Simplify(qt0 - cross_t);
-				glEnd();
-				glBegin(GL_QUADS);
-				glVertex3f_Simplify(qt0- orient_t + cross_t);
-				glVertex3f_Simplify(qt1- orient_t + cross_t);
-				glVertex3f_Simplify(qt1- orient_t - cross_t);
-				glVertex3f_Simplify(qt0- orient_t - cross_t);
-				glEnd();
-				glBegin(GL_QUADS);
-				glVertex3f_Simplify(qt0  + cross_t);
-				glVertex3f_Simplify(qt0  - cross_t);
-				glVertex3f_Simplify(qt0 - orient_t - cross_t);
-				glVertex3f_Simplify(qt0 - orient_t + cross_t);
-				glEnd();
-				glBegin(GL_QUADS);
-				glVertex3f_Simplify(qt1 + cross_t);
-				glVertex3f_Simplify(qt1 - cross_t);
-				glVertex3f_Simplify(qt1 - orient_t - cross_t);
-				glVertex3f_Simplify(qt1 - orient_t + cross_t);
-				glEnd();
-				glBegin(GL_QUADS);
-				glVertex3f_Simplify(qt1 - cross_t);
-				glVertex3f_Simplify(qt0 - cross_t);
-				glVertex3f_Simplify(qt0 - orient_t - cross_t);
-				glVertex3f_Simplify(qt1 - orient_t - cross_t);
-				glEnd();
+				DrawSleeper(qt0, qt1, cross_t, orient_t);
 			}
 		}
 	}
 }
 
 void TrainView::drawTrain(TrainView* TrainV, bool doingShadows) {
-	float DIVIDE_LINE = 20.0f;
 	float percent = 1.0f / DIVIDE_LINE;
 	float t = m_pTrack->trainU;
 	int i = floor(t);
@@ -571,7 +577,7 @@ void TrainView::drawTrain(TrainView* TrainV, bool doingShadows) {
 	forward =forward * 10;
 
 	if (!doingShadows) {
-		glColor3ub(255, 255, 255);
+		glColor3ub(64, 94, 15);
 	}
 	//¤W
 	glBegin(GL_QUADS);

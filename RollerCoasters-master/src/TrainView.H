@@ -83,5 +83,7 @@ class TrainView : public Fl_Gl_Window
 		int				selectedCube;  // simple - just remember which cube is selected
 
 		TrainWindow*	tw;				// The parent of this display window
-		CTrack*			m_pTrack;		// The track of the entire scene
+		CTrack*			m_pTrack;		// The track of the 
+		float DIVIDE_LINE = 30.0f;
+		float ArcLength = 0.0f;
 };
