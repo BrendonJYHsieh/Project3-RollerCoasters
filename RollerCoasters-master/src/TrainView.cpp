@@ -546,20 +546,20 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 				glEnd();
 			}	
 			ArcLength += sqrt(forward.x * forward.x + forward.y * forward.y + forward.z * forward.z);
-			if (ArcLength > track_interval) {
+			/*if (ArcLength > track_interval) {
 				if (!doingShadows) {
 					glColor3ub(101, 50, 0);
 				}
 				forward.normalize();
 				DrawSleeper(qt0, qt0+forward *track_interval, cross_t, orient_t);
 				ArcLength -= track_interval;
-			}
-			/*if (j % 2 == 0) {
+			}*/
+			if (j % 2 == 0) {
 				if (!doingShadows) {
 					glColor3ub(101, 50, 0);
 				}
 				DrawSleeper(qt0, qt1, cross_t, orient_t);
-			}*/
+			}
 			lastqt = qt0;
 		}
 	}
