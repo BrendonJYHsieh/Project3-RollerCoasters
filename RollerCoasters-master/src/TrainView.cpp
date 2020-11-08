@@ -86,6 +86,25 @@ Pnt3f GMT(Pnt3f p1, Pnt3f p2, Pnt3f p3, Pnt3f p4, float mode, float t) {
 void glVertex3f_Simplify(Pnt3f q0) {
 	glVertex3f(q0.x,q0.y,q0.z);
 }
+
+void initDirLight() {
+	float noAmbient[] = { 0.0f,0.0f,0.0f ,0.0f ,1.0f };
+	float whiteDiffuse[] = { 1.0,1.0f ,1.0f ,1.0f };
+	float position[] = { 1.0,1.0f ,0.0f ,0.0f };
+
+	glLightfv(GL_LIGHT0, GL_AMBIENT, noAmbient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, whiteDiffuse);
+	glLightfv(GL_LIGHT0, GL_POSITION, position);
+}
+
+void initPosLight() {
+	float yellowAmbientDiffuse[] = { 1.0f,1.0f ,0.0f ,1.0f };
+	float position[] = { -2.0,2.0f ,-5.0f ,1.0f };
+
+	glLightfv(GL_LIGHT1, GL_AMBIENT, yellowAmbientDiffuse);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, yellowAmbientDiffuse);
+	glLightfv(GL_LIGHT1, GL_POSITION, position);
+}
 //************************************************************************
 //
 // * Constructor to set up the GL window
@@ -404,6 +423,8 @@ void TrainView::trainCamView(TrainView* train, float aspect) {
 //========================================================================
 void TrainView::drawStuff(bool doingShadows)
 {
+	initDirLight();
+	initPosLight();
 	// Draw the control points
 	// don't draw the control points if you're driving 
 	// (otherwise you get sea-sick as you drive through them)
@@ -470,11 +491,9 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 			orient_t = cross_t * (qt1 - qt0);
 			orient_t.normalize();
 			cross_t = cross_t * 2.5f;
-			
 			if (!doingShadows) {
 				glColor3ub(77, 19, 0);
 			}
-			//cout << cross_t.y << endl;
 			glBegin(GL_LINES);
 			glVertex3f_Simplify(qt0 + cross_t);
 			glVertex3f_Simplify(qt1 + cross_t);
