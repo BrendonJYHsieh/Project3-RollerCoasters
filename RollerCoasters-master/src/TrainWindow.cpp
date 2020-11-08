@@ -36,7 +36,6 @@
 #include "CallBacks.H"
 
 
-
 //************************************************************************
 //
 // * Constructor
@@ -199,9 +198,9 @@ advanceTrain(float dir)
 	//#####################################################################
 	// TODO: make this work for your train
 	//#####################################################################
-	trainView->m_pTrack->trainU += dir*speed->value()/20;
-	if (trainView->m_pTrack->trainU > trainView->m_pTrack->points.size()) {
-		trainView->m_pTrack->trainU -= trainView->m_pTrack->points.size();
+	trainView->t_time += (dir*speed->value()/ trainView->m_pTrack->points.size())/(trainView->DIVIDE_LINE);
+	if (trainView->t_time > trainView->m_pTrack->points.size()) {
+		trainView->t_time -= trainView->m_pTrack->points.size();
 	}
 #ifdef EXAMPLE_SOLUTION
 	// note - we give a little bit more example code here than normal,

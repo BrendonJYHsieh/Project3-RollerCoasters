@@ -426,7 +426,7 @@ void TrainView::trainCamView(TrainView* train, float aspect) {
 	gluPerspective(120, aspect, 1, 500);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	float t = m_pTrack->trainU;
+	float t = t_time;
 	int i = floor(t);
 	t -= i;
 	ControlPoint p0 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
@@ -500,6 +500,9 @@ void TrainView::drawStuff(bool doingShadows)
 //########################################################################
 //========================================================================
 void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
+
+	float percent = 1.0f / DIVIDE_LINE;
+	Pnt3f lastqt;
 	for (size_t i = 0; i < m_pTrack->points.size(); i++) {
 		// pos
 		Pnt3f cp_pos_p1 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
@@ -511,9 +514,7 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 		Pnt3f cp_orient_p2 = m_pTrack->points[(i + m_pTrack->points.size()) % m_pTrack->points.size()].orient;
 		Pnt3f cp_orient_p3 = m_pTrack->points[(i + 1 + m_pTrack->points.size()) % m_pTrack->points.size()].orient;
 		Pnt3f cp_orient_p4 = m_pTrack->points[(i + 2 + m_pTrack->points.size()) % m_pTrack->points.size()].orient;
-		float percent = 1.0f / DIVIDE_LINE;
 		float t = 0;
-		Pnt3f lastqt;
 		for (size_t j = 0; j < DIVIDE_LINE; j++) {
 			Pnt3f orient_t= GMT(cp_orient_p1, cp_orient_p2, cp_orient_p3, cp_orient_p4,TrainV->tw->splineBrowser->value(), t);
 			Pnt3f qt0=GMT(cp_pos_p1, cp_pos_p2, cp_pos_p3, cp_pos_p4, TrainV->tw->splineBrowser->value(), t);
@@ -535,7 +536,7 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 			glVertex3f_Simplify(qt0 - cross_t);
 			glVertex3f_Simplify(qt1 - cross_t);
 			glEnd();
-			//¸É»ôÅK­yªºÂ_µõ³B
+			//¸ÉµeÅK­yÂ_µõ³B
 			if (j != 0) {
 				glBegin(GL_LINES);
 				glVertex3f_Simplify(lastqt + cross_t);
@@ -545,13 +546,20 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 				glEnd();
 			}	
 			ArcLength += sqrt(forward.x * forward.x + forward.y * forward.y + forward.z * forward.z);
-
-			if (j % 2 == 0) {
+			if (ArcLength > track_interval) {
+				if (!doingShadows) {
+					glColor3ub(101, 50, 0);
+				}
+				forward.normalize();
+				DrawSleeper(qt0, qt0+forward *track_interval, cross_t, orient_t);
+				ArcLength -= track_interval;
+			}
+			/*if (j % 2 == 0) {
 				if (!doingShadows) {
 					glColor3ub(101, 50, 0);
 				}
 				DrawSleeper(qt0, qt1, cross_t, orient_t);
-			}
+			}*/
 			lastqt = qt0;
 		}
 	}
@@ -559,7 +567,7 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 
 void TrainView::drawTrain(TrainView* TrainV, bool doingShadows) {
 	float percent = 1.0f / DIVIDE_LINE;
-	float t = m_pTrack->trainU;
+	float t = t_time;
 	int i = floor(t);
 	t -= i;
 	Pnt3f cp_pos_p1 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
