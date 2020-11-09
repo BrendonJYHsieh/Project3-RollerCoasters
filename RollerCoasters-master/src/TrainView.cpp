@@ -38,8 +38,6 @@
 #include "TrainWindow.H"
 #include "Utilities/3DUtils.H"
 
-#include <iostream>
-using namespace std;
 
 #ifdef EXAMPLE_SOLUTION
 #	include "TrainExample/TrainExample.H"
@@ -137,6 +135,89 @@ void DrawSleeper(Pnt3f qt0, Pnt3f qt1, Pnt3f cross_t,Pnt3f orient_t) {
 	glVertex3f_Simplify(qt0 - orient_t - cross_t);
 	glVertex3f_Simplify(qt1 - orient_t - cross_t);
 	glEnd();*/
+}
+void draw_sleeper(Pnt3f front, Pnt3f back, Pnt3f cross_t, Pnt3f up, bool doingShadows) {
+	Pnt3f sleeper_up0 = front - up;
+	Pnt3f sleeper_up1 = back - up;
+	Pnt3f forward_nor = (front - back);
+	forward_nor.normalize();
+	Pnt3f cross_nor = cross_t;
+	cross_nor.normalize();
+	Pnt3f up_nor = up;
+	up_nor.normalize();
+	if (!doingShadows) glColor3ub(25, 25, 25);
+	glLineWidth(1);
+	glBegin(GL_LINES);
+	glVertex3f_Simplify(front + cross_t);
+	glVertex3f_Simplify(back + cross_t);
+
+	glVertex3f_Simplify(back + cross_t);
+	glVertex3f_Simplify(back - cross_t);
+
+	glVertex3f_Simplify(back - cross_t);
+	glVertex3f_Simplify(front - cross_t);
+
+	glVertex3f_Simplify(front - cross_t);
+	glVertex3f_Simplify(front + cross_t);
+
+	//------------------------------
+	glVertex3f_Simplify(front + cross_t);
+	glVertex3f_Simplify(sleeper_up0 + cross_t);
+
+	glVertex3f_Simplify(front - cross_t);
+	glVertex3f_Simplify(sleeper_up0 - cross_t);
+
+	glVertex3f_Simplify(back + cross_t);
+	glVertex3f_Simplify(sleeper_up1 + cross_t);
+
+	glVertex3f_Simplify(back - cross_t);
+	glVertex3f_Simplify(sleeper_up1 - cross_t);
+
+	//------------------------------
+	glVertex3f_Simplify(sleeper_up0 + cross_t);
+	glVertex3f_Simplify(sleeper_up1 + cross_t);
+
+	glVertex3f_Simplify(sleeper_up1 + cross_t);
+	glVertex3f_Simplify(sleeper_up1 - cross_t);
+
+	glVertex3f_Simplify(sleeper_up1 - cross_t);
+	glVertex3f_Simplify(sleeper_up0 - cross_t);
+
+	glVertex3f_Simplify(sleeper_up0 - cross_t);
+	glVertex3f_Simplify(sleeper_up0 + cross_t);
+	glEnd();
+	if (!doingShadows) glColor3ub(94, 38, 18);
+	glBegin(GL_QUADS);
+	glVertex3f_Simplify(front + cross_t);
+	glVertex3f_Simplify(back + cross_t);
+	glVertex3f_Simplify(back - cross_t);
+	glVertex3f_Simplify(front - cross_t);
+
+	glVertex3f_Simplify(sleeper_up0 + cross_t);
+	glVertex3f_Simplify(sleeper_up1 + cross_t);
+	glVertex3f_Simplify(sleeper_up1 - cross_t);
+	glVertex3f_Simplify(sleeper_up0 - cross_t);
+
+	glVertex3f_Simplify(sleeper_up0 - cross_t);
+	glVertex3f_Simplify(front - cross_t);
+	glVertex3f_Simplify(back - cross_t);
+	glVertex3f_Simplify(sleeper_up1 - cross_t);
+
+	glVertex3f_Simplify(sleeper_up0 + cross_t);
+	glVertex3f_Simplify(front + cross_t);
+	glVertex3f_Simplify(back + cross_t);
+	glVertex3f_Simplify(sleeper_up1 + cross_t);
+
+	glVertex3f_Simplify(front - cross_t);
+	glVertex3f_Simplify(front + cross_t);
+	glVertex3f_Simplify(sleeper_up0 + cross_t);
+	glVertex3f_Simplify(sleeper_up0 - cross_t);
+
+	glVertex3f_Simplify(back - cross_t);
+	glVertex3f_Simplify(back + cross_t);
+	glVertex3f_Simplify(sleeper_up1 + cross_t);
+	glVertex3f_Simplify(sleeper_up1 - cross_t);
+	glEnd();
 }
 //************************************************************************
 //
@@ -521,28 +602,27 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 			orient_t.normalize();
 			cross_t = cross_t * 2.5f;
 			
-			//if (!doingShadows) {
-			//	glColor3ub(77, 19, 0);
-			//}
-			//glLineWidth(4);
-			//glBegin(GL_LINES);
-			//glVertex3f_Simplify(qt0 + cross_t);
-			//glVertex3f_Simplify(qt1 + cross_t);
-			//glVertex3f_Simplify(qt0 - cross_t);
-			//glVertex3f_Simplify(qt1 - cross_t);
-			//glEnd();
-			////¸ÉµeÅK­yÂ_µõ³B
-			//if (j != 0) {
-			//	glBegin(GL_LINES);
-			//	glVertex3f_Simplify(lastqt + cross_t);
-			//	glVertex3f_Simplify(qt1 + cross_t);
-			//	glVertex3f_Simplify(lastqt - cross_t);
-			//	glVertex3f_Simplify(qt1 - cross_t);
-			//	glEnd();
-			//}	
+			if (!doingShadows) {
+				glColor3ub(77, 19, 0);
+			}
+			glLineWidth(4);
+			glBegin(GL_LINES);
+			glVertex3f_Simplify(qt0 + cross_t);
+			glVertex3f_Simplify(qt1 + cross_t);
+			glVertex3f_Simplify(qt0 - cross_t);
+			glVertex3f_Simplify(qt1 - cross_t);
+			glEnd();
+			//¸ÉµeÅK­yÂ_µõ³B
+			if (j != 0) {
+				glBegin(GL_LINES);
+				glVertex3f_Simplify(lastqt + cross_t);
+				glVertex3f_Simplify(qt1 + cross_t);
+				glVertex3f_Simplify(lastqt - cross_t);
+				glVertex3f_Simplify(qt1 - cross_t);
+				glEnd();
+			}	
 			
-			T+= sqrtf(forward.x * forward.x + forward.y * forward.y + forward.z * forward.z);
-			cout << T << endl;
+			/*T+= sqrtf(forward.x * forward.x + forward.y * forward.y + forward.z * forward.z);
 			if (T >= track_interval) {
 				if (!doingShadows) {
 					glColor3ub(101, 50, 0);
@@ -550,7 +630,12 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 				forward.normalize();
 				DrawSleeper(qt0 - forward * track_interval, qt0, cross_t, orient_t);
 				T -= track_interval;
-				cout << T << endl;
+			}*/
+			if (j % 2 == 0) {
+				if (!doingShadows) {
+					glColor3ub(101, 50, 0);
+				}
+				DrawSleeper(qt0, qt1, cross_t, orient_t);
 			}
 			/*else if (!sleeper && T >= track_interval) {
 				T -= track_interval;
