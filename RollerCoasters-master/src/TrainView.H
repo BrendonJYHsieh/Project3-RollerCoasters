@@ -84,7 +84,7 @@ class TrainView : public Fl_Gl_Window
 
 		TrainWindow*	tw;				// The parent of this display window
 		CTrack*			m_pTrack;		// The track of the 
-		float DIVIDE_LINE = 30.0f;
+		float DIVIDE_LINE = 100.0f;
 		float ArcLength = 0.0f;
 		float t_time = 0.0f;
 		float track_interval = 3.0f;
