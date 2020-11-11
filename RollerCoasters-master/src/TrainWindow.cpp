@@ -198,10 +198,14 @@ advanceTrain(float dir)
 	//#####################################################################
 	// TODO: make this work for your train
 	//#####################################################################
-	trainView->t_time += (dir*speed->value()/ trainView->m_pTrack->points.size()/10);
+
+	trainView->t_time = trainView->m_pTrack->trainT;
+	trainView->t_i = trainView->m_pTrack->trainI;
+	cout << trainView->t_time<<" "<< trainView->t_i << endl;
+	/*trainView->t_time += (dir*speed->value()/ trainView->m_pTrack->points.size()/10);
 	if (trainView->t_time > trainView->m_pTrack->points.size()) {
 		trainView->t_time -= trainView->m_pTrack->points.size();
-	}
+	}*/
 #ifdef EXAMPLE_SOLUTION
 	// note - we give a little bit more example code here than normal,
 	// so you can see how this works

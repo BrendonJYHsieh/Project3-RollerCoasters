@@ -583,9 +583,13 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 				glEnd();
 			}	
 			//¤õ¨®²¾°Ê
-			Path += sqrtf(forward.x * forward.x + forward.y * forward.y + forward.z * forward.z);
-
-			
+			Path_Total += sqrtf(forward.x * forward.x + forward.y * forward.y + forward.z * forward.z);
+			if (Path_Total >= Path_Length / TrainV->tw->speed->value()) {
+				TrainV->m_pTrack->trainT = t;
+				TrainV->m_pTrack->trainI = i;
+				//cout << t << " " << i << endl;
+				Path_Total -= Path_Length / TrainV->tw->speed->value();
+			}
 			//ÅK­y
 			T+= sqrtf(forward.x * forward.x + forward.y * forward.y + forward.z * forward.z);
 			if (!Draw_Sleeper &&T >= Sleeper_Length) {
@@ -606,8 +610,8 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 void TrainView::drawTrain(TrainView* TrainV, bool doingShadows) {
 	float percent = 1.0f / DIVIDE_LINE;
 	float t = t_time;
-	int i = floor(t);
-	t -= i;
+	int i = t_i;
+
 	Pnt3f cp_pos_p1 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
 	Pnt3f cp_pos_p2 = m_pTrack->points[(i + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
 	Pnt3f cp_pos_p3 = m_pTrack->points[(i + 1 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
