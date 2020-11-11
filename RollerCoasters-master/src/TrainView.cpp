@@ -105,123 +105,79 @@ void initPosLight() {
 	glLightfv(GL_LIGHT1, GL_POSITION, position);
 }
 
-void DrawSleeper(Pnt3f qt0, Pnt3f qt1, Pnt3f cross_t,Pnt3f orient_t) {
+void DrawSleeper(Pnt3f qt0, Pnt3f qt1, Pnt3f cross_t,Pnt3f orient_t, bool doingShadows) {
 
-	
-	glBegin(GL_QUADS);
-	glVertex3f_Simplify(qt0 + cross_t);
-	glVertex3f_Simplify(qt1 + cross_t);
-	glVertex3f_Simplify(qt1 - cross_t);
-	glVertex3f_Simplify(qt0 - cross_t);
-	glEnd();
-	glBegin(GL_QUADS);
-	glVertex3f_Simplify(qt0 - orient_t + cross_t);
-	glVertex3f_Simplify(qt1 - orient_t + cross_t);
-	glVertex3f_Simplify(qt1 - orient_t - cross_t);
-	glVertex3f_Simplify(qt0 - orient_t - cross_t);
-	glEnd();
-	glBegin(GL_QUADS);
-	glVertex3f_Simplify(qt0 + cross_t);
-	glVertex3f_Simplify(qt0 - cross_t);
-	glVertex3f_Simplify(qt0 - orient_t - cross_t);
-	glVertex3f_Simplify(qt0 - orient_t + cross_t);
-	glEnd();
-	glBegin(GL_QUADS);
-	glVertex3f_Simplify(qt1 + cross_t);
-	glVertex3f_Simplify(qt1 - cross_t);
-	glVertex3f_Simplify(qt1 - orient_t - cross_t);
-	glVertex3f_Simplify(qt1 - orient_t + cross_t);
-	glEnd();
-	glBegin(GL_QUADS);
-	glVertex3f_Simplify(qt1 - cross_t);
-	glVertex3f_Simplify(qt0 - cross_t);
-	glVertex3f_Simplify(qt0 - orient_t - cross_t);
-	glVertex3f_Simplify(qt1 - orient_t - cross_t);
-	glEnd();
-}
-void draw_sleeper(Pnt3f front, Pnt3f back, Pnt3f cross_t, Pnt3f up, bool doingShadows) {
-	Pnt3f sleeper_up0 = front - up;
-	Pnt3f sleeper_up1 = back - up;
-	Pnt3f forward_nor = (front - back);
-	forward_nor.normalize();
-	Pnt3f cross_nor = cross_t;
-	cross_nor.normalize();
-	Pnt3f up_nor = up;
-	up_nor.normalize();
-	if (!doingShadows) glColor3ub(25, 25, 25);
-	glLineWidth(1);
+	//畫鐵軌的線
+	if (!doingShadows) {
+		glColor3ub(0, 0, 0);
+	}
+	glLineWidth(2);
 	glBegin(GL_LINES);
-	glVertex3f_Simplify(front + cross_t);
-	glVertex3f_Simplify(back + cross_t);
+	glVertex3f_Simplify(qt0 + cross_t);
+	glVertex3f_Simplify(qt0 - cross_t);
+	glVertex3f_Simplify(qt1 + cross_t);
+	glVertex3f_Simplify(qt1 - cross_t);
 
-	glVertex3f_Simplify(back + cross_t);
-	glVertex3f_Simplify(back - cross_t);
+	glVertex3f_Simplify(qt0 + cross_t - orient_t);
+	glVertex3f_Simplify(qt0 - cross_t - orient_t);
+	glVertex3f_Simplify(qt1 + cross_t - orient_t);
+	glVertex3f_Simplify(qt1 - cross_t - orient_t);
 
-	glVertex3f_Simplify(back - cross_t);
-	glVertex3f_Simplify(front - cross_t);
+	glVertex3f_Simplify(qt0 + cross_t);
+	glVertex3f_Simplify(qt0 + cross_t - orient_t);
+	glVertex3f_Simplify(qt1 + cross_t);
+	glVertex3f_Simplify(qt1 + cross_t - orient_t);
 
-	glVertex3f_Simplify(front - cross_t);
-	glVertex3f_Simplify(front + cross_t);
+	glVertex3f_Simplify(qt0 - cross_t);
+	glVertex3f_Simplify(qt0 - cross_t - orient_t);
+	glVertex3f_Simplify(qt1 - cross_t);
+	glVertex3f_Simplify(qt1 - cross_t - orient_t);
 
-	//------------------------------
-	glVertex3f_Simplify(front + cross_t);
-	glVertex3f_Simplify(sleeper_up0 + cross_t);
 
-	glVertex3f_Simplify(front - cross_t);
-	glVertex3f_Simplify(sleeper_up0 - cross_t);
+	glVertex3f_Simplify(qt0 - cross_t - orient_t);
+	glVertex3f_Simplify(qt1 - cross_t - orient_t);
 
-	glVertex3f_Simplify(back + cross_t);
-	glVertex3f_Simplify(sleeper_up1 + cross_t);
 
-	glVertex3f_Simplify(back - cross_t);
-	glVertex3f_Simplify(sleeper_up1 - cross_t);
-
-	//------------------------------
-	glVertex3f_Simplify(sleeper_up0 + cross_t);
-	glVertex3f_Simplify(sleeper_up1 + cross_t);
-
-	glVertex3f_Simplify(sleeper_up1 + cross_t);
-	glVertex3f_Simplify(sleeper_up1 - cross_t);
-
-	glVertex3f_Simplify(sleeper_up1 - cross_t);
-	glVertex3f_Simplify(sleeper_up0 - cross_t);
-
-	glVertex3f_Simplify(sleeper_up0 - cross_t);
-	glVertex3f_Simplify(sleeper_up0 + cross_t);
+	glVertex3f_Simplify(qt0 + cross_t - orient_t);
+	glVertex3f_Simplify(qt1 + cross_t - orient_t);
 	glEnd();
-	if (!doingShadows) glColor3ub(101, 50, 0);
+	
+	//畫鐵軌
+	if (!doingShadows) {
+		glColor3ub(101, 50, 0);
+	}
 	glBegin(GL_QUADS);
-	glVertex3f_Simplify(front + cross_t);
-	glVertex3f_Simplify(back + cross_t);
-	glVertex3f_Simplify(back - cross_t);
-	glVertex3f_Simplify(front - cross_t);
-
-	glVertex3f_Simplify(sleeper_up0 + cross_t);
-	glVertex3f_Simplify(sleeper_up1 + cross_t);
-	glVertex3f_Simplify(sleeper_up1 - cross_t);
-	glVertex3f_Simplify(sleeper_up0 - cross_t);
-
-	glVertex3f_Simplify(sleeper_up0 - cross_t);
-	glVertex3f_Simplify(front - cross_t);
-	glVertex3f_Simplify(back - cross_t);
-	glVertex3f_Simplify(sleeper_up1 - cross_t);
-
-	glVertex3f_Simplify(sleeper_up0 + cross_t);
-	glVertex3f_Simplify(front + cross_t);
-	glVertex3f_Simplify(back + cross_t);
-	glVertex3f_Simplify(sleeper_up1 + cross_t);
-
-	glVertex3f_Simplify(front - cross_t);
-	glVertex3f_Simplify(front + cross_t);
-	glVertex3f_Simplify(sleeper_up0 + cross_t);
-	glVertex3f_Simplify(sleeper_up0 - cross_t);
-
-	glVertex3f_Simplify(back - cross_t);
-	glVertex3f_Simplify(back + cross_t);
-	glVertex3f_Simplify(sleeper_up1 + cross_t);
-	glVertex3f_Simplify(sleeper_up1 - cross_t);
+	glVertex3f_Simplify(qt0 + cross_t);
+	glVertex3f_Simplify(qt1 + cross_t);
+	glVertex3f_Simplify(qt1 - cross_t);
+	glVertex3f_Simplify(qt0 - cross_t);
+	glEnd();
+	glBegin(GL_QUADS);
+	glVertex3f_Simplify(qt0 - orient_t + cross_t);
+	glVertex3f_Simplify(qt1 - orient_t + cross_t);
+	glVertex3f_Simplify(qt1 - orient_t - cross_t);
+	glVertex3f_Simplify(qt0 - orient_t - cross_t);
+	glEnd();
+	glBegin(GL_QUADS);
+	glVertex3f_Simplify(qt0 + cross_t);
+	glVertex3f_Simplify(qt0 - cross_t);
+	glVertex3f_Simplify(qt0 - orient_t - cross_t);
+	glVertex3f_Simplify(qt0 - orient_t + cross_t);
+	glEnd();
+	glBegin(GL_QUADS);
+	glVertex3f_Simplify(qt1 + cross_t);
+	glVertex3f_Simplify(qt1 - cross_t);
+	glVertex3f_Simplify(qt1 - orient_t - cross_t);
+	glVertex3f_Simplify(qt1 - orient_t + cross_t);
+	glEnd();
+	glBegin(GL_QUADS);
+	glVertex3f_Simplify(qt1 - cross_t);
+	glVertex3f_Simplify(qt0 - cross_t);
+	glVertex3f_Simplify(qt0 - orient_t - cross_t);
+	glVertex3f_Simplify(qt1 - orient_t - cross_t);
 	glEnd();
 }
+
 //************************************************************************
 //
 // * Constructor to set up the GL window
@@ -629,12 +585,8 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 			
 			T+= sqrtf(forward.x * forward.x + forward.y * forward.y + forward.z * forward.z);
 			if (!Draw_Sleeper &&T >= Sleeper_Length) {
-				if (!doingShadows) {
-					glColor3ub(101, 50, 0);
-				}
 				forward.normalize();
-				//DrawSleeper(qt0, qt0 - forward * Sleeper_Length, cross_t, orient_t);
-				draw_sleeper(qt0 - forward * Sleeper_Length, qt0, cross_t, orient_t, doingShadows);
+				DrawSleeper(qt0, qt0 - forward * Sleeper_Length, cross_t, orient_t, doingShadows);
 				T -= Sleeper_Length;
 				Draw_Sleeper = !Draw_Sleeper;
 			}
