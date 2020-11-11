@@ -609,7 +609,7 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 			if (!doingShadows) {
 				glColor3ub(77, 19, 0);
 			}
-			glLineWidth(4);
+			glLineWidth(5);
 			glBegin(GL_LINES);
 			glVertex3f_Simplify(qt0 + cross_t);
 			glVertex3f_Simplify(qt1 + cross_t);
@@ -618,6 +618,7 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 			glEnd();
 			//¸ÉµeÅK­yÂ_µõ³B
 			if (j != 0) {
+				glLineWidth(5);
 				glBegin(GL_LINES);
 				glVertex3f_Simplify(lastqt + cross_t);
 				glVertex3f_Simplify(qt1 + cross_t);
@@ -632,24 +633,15 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 					glColor3ub(101, 50, 0);
 				}
 				forward.normalize();
-				//DrawSleeper(qt0, qt0 - forward * track_interval, cross_t, orient_t);
+				//DrawSleeper(qt0, qt0 - forward * Sleeper_Length, cross_t, orient_t);
 				draw_sleeper(qt0 - forward * Sleeper_Length, qt0, cross_t, orient_t, doingShadows);
 				T -= Sleeper_Length;
+				Draw_Sleeper = !Draw_Sleeper;
 			}
 			else if (Draw_Sleeper && T >= Sleeper_Interval) {
 				T -= Sleeper_Interval;
 				Draw_Sleeper = !Draw_Sleeper;
 			}
-			/*if (j % 2 == 0) {
-				if (!doingShadows) {
-					glColor3ub(101, 50, 0);
-				}
-				DrawSleeper(qt0, qt1, cross_t, orient_t);
-			}*/
-			/*else if (!sleeper && T >= track_interval) {
-				T -= track_interval;
-				sleeper = !sleeper;
-			}*/
 			lastqt = qt0;
 		}
 	}

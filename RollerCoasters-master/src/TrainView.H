@@ -47,9 +47,10 @@ class CTrack;
 #pragma warning(disable:4311)
 #include <Fl/Fl_Gl_Window.h>
 #pragma warning(pop)
-
+#include<iostream>
 // this uses the old ArcBall Code
 #include "Utilities/ArcBallCam.H"
+using namespace std;
 
 class TrainView : public Fl_Gl_Window
 {
