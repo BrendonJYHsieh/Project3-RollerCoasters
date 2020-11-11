@@ -582,7 +582,11 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 				glVertex3f_Simplify(qt1 - cross_t);
 				glEnd();
 			}	
+			//¤õ¨®²¾°Ê
+			Path += sqrtf(forward.x * forward.x + forward.y * forward.y + forward.z * forward.z);
+
 			
+			//ÅK­y
 			T+= sqrtf(forward.x * forward.x + forward.y * forward.y + forward.z * forward.z);
 			if (!Draw_Sleeper &&T >= Sleeper_Length) {
 				forward.normalize();

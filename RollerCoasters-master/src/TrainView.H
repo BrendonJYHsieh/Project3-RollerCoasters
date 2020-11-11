@@ -48,6 +48,7 @@ class CTrack;
 #include <Fl/Fl_Gl_Window.h>
 #pragma warning(pop)
 #include<iostream>
+#include"TrainWindow.H"
 // this uses the old ArcBall Code
 #include "Utilities/ArcBallCam.H"
 using namespace std;
@@ -86,7 +87,6 @@ class TrainView : public Fl_Gl_Window
 		TrainWindow*	tw;				// The parent of this display window
 		CTrack*			m_pTrack;		// The track of the 
 		float DIVIDE_LINE = 1000.0f;
-		float ArcLength = 0.0f;
 		float t_time = 0.0f;
 		float Sleeper_Length = 3.0f;
 		float Sleeper_Interval = 6.0f;
