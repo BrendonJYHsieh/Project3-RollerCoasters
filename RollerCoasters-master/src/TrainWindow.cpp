@@ -198,7 +198,7 @@ advanceTrain(float dir)
 	//#####################################################################
 	// TODO: make this work for your train
 	//#####################################################################
-	trainView->t_time += (dir*speed->value()/ trainView->m_pTrack->points.size())/(trainView->DIVIDE_LINE);
+	trainView->t_time += (dir*speed->value()/ trainView->m_pTrack->points.size()/10);
 	if (trainView->t_time > trainView->m_pTrack->points.size()) {
 		trainView->t_time -= trainView->m_pTrack->points.size();
 	}
