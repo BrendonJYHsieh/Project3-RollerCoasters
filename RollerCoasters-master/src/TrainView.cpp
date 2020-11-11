@@ -544,12 +544,14 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 	float percent = 1.0f / DIVIDE_LINE;
 	Pnt3f lastqt;
 	bool Draw_Sleeper = false;
+	p = new double[m_pTrack->points.size()];
 	for (size_t i = 0; i < m_pTrack->points.size(); i++) {
 		ControlPoint& p1 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
 		ControlPoint& p2 = m_pTrack->points[(i + m_pTrack->points.size()) % m_pTrack->points.size()];
 		ControlPoint& p3 = m_pTrack->points[(i + 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
 		ControlPoint& p4 = m_pTrack->points[(i + 2 + m_pTrack->points.size()) % m_pTrack->points.size()];
 		float t = percent;
+		Path_Total = 0;
 		for (size_t j = 0; j < DIVIDE_LINE; j++) {
 			Pnt3f qt0 = GMT(p1.pos, p2.pos, p3.pos, p4.pos, TrainV->tw->splineBrowser->value(), t);
 			Pnt3f orient_t= GMT(p1.orient, p2.orient, p3.orient, p4.orient,TrainV->tw->splineBrowser->value(), t);
@@ -584,12 +586,6 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 			}	
 			//¤õ¨®²¾°Ê
 			Path_Total += sqrtf(forward.x * forward.x + forward.y * forward.y + forward.z * forward.z);
-			if (Path_Total >= Path_Length / TrainV->tw->speed->value()) {
-				TrainV->m_pTrack->trainT = t;
-				TrainV->m_pTrack->trainI = i;
-				//cout << t << " " << i << endl;
-				Path_Total -= Path_Length / TrainV->tw->speed->value();
-			}
 			//ÅK­y
 			T+= sqrtf(forward.x * forward.x + forward.y * forward.y + forward.z * forward.z);
 			if (!Draw_Sleeper &&T >= Sleeper_Length) {
@@ -604,14 +600,20 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 			}
 			lastqt = qt0;
 		}
+		p[i] = Path_Total;
+	}
+	for (int i = 0; i < m_pTrack->points.size(); i++) {
+		cout<<p[i] << endl;
 	}
 }
 
 void TrainView::drawTrain(TrainView* TrainV, bool doingShadows) {
 	float percent = 1.0f / DIVIDE_LINE;
 	float t = t_time;
-	int i = t_i;
-
+	int i = floor(t);
+	t -= i;
+	cout << "i:" << i << endl;
+	
 	Pnt3f cp_pos_p1 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
 	Pnt3f cp_pos_p2 = m_pTrack->points[(i + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
 	Pnt3f cp_pos_p3 = m_pTrack->points[(i + 1 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;

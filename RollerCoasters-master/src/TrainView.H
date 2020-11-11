@@ -91,6 +91,10 @@ class TrainView : public Fl_Gl_Window
 		float t_i = 0.0f;
 		float Sleeper_Length = 3.0f;
 		float Sleeper_Interval = 6.0f;
-		float Path_Length = 6.0f;
+		float Path_Length = 0.3f;
 		float Path_Total = 0.0;
+		float countJ=0;
+		int countI = 0;
+		double* p;
+		vector<float>way0, way1, way2, way3;
 };
