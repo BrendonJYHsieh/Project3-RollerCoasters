@@ -1,4 +1,4 @@
-/************************************************************************
+ï»¿/************************************************************************
      File:        TrainView.cpp
 
      Author:     
@@ -76,6 +76,15 @@ Pnt3f GMT(Pnt3f p1, Pnt3f p2, Pnt3f p3, Pnt3f p4, float mode, float t) {
 		};
 		M /= 6.0f;
 	}
+	else if (mode == 4) {
+		M = {
+			{-2.0f,3.0f,0.0f,0.0f},
+			{2.0f,-3.0f,0.0f,1.0f},
+			{1.0f,-1.0f,0.0f,0.0f},
+			{1.0f,-2.0f,1.0f,1.0f}
+		};
+		M /= 6.0f;
+	}
 	M = glm::transpose(M);
 	glm::vec4 T = { pow(t,3),pow(t,2),pow(t,1),pow(t,0) };
 	glm::vec4 result = G * M * T;
@@ -107,7 +116,7 @@ void initPosLight() {
 
 void DrawSleeper(Pnt3f qt0, Pnt3f qt1, Pnt3f cross_t,Pnt3f orient_t, bool doingShadows) {
 
-	//µeÅK­yªº½u
+	//ç•«éµè»Œçš„ç·š
 	if (!doingShadows) {
 		glColor3ub(0, 0, 0);
 	}
@@ -142,7 +151,7 @@ void DrawSleeper(Pnt3f qt0, Pnt3f qt1, Pnt3f cross_t,Pnt3f orient_t, bool doingS
 	glVertex3f_Simplify(qt1 + cross_t - orient_t);
 	glEnd();
 	
-	//µeÅK­y
+	//ç•«éµè»Œ
 	if (!doingShadows) {
 		glColor3ub(101, 50, 0);
 	}
@@ -460,11 +469,10 @@ setProjection()
 	}
 }
 void TrainView::trainCamView(TrainView* train, float aspect) {
-	float percent = 1.0f / 20.0f;
-	glClear(GL_DEPTH_BUFFER_BIT);
+	float percent = 1.0f / DIVIDE_LINE;
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(120, aspect, 1, 500);
+	gluPerspective(120, aspect, 0.01, 1000);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	float t = t_time;
@@ -475,13 +483,13 @@ void TrainView::trainCamView(TrainView* train, float aspect) {
 	ControlPoint p2 = m_pTrack->points[(i + 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
 	ControlPoint p3 = m_pTrack->points[(i + 2 + m_pTrack->points.size()) % m_pTrack->points.size()];
 
-	Pnt3f train_ori_center = GMT(p0.orient, p1.orient, p2.orient, p3.orient, tw->splineBrowser->value(), t-percent);
-	Pnt3f train_ori_forward = GMT(p0.orient, p1.orient, p2.orient, p3.orient, tw->splineBrowser->value(), t);
+	Pnt3f eye_ori = GMT(p0.orient, p1.orient, p2.orient, p3.orient, tw->splineBrowser->value(), t-percent);
+	Pnt3f centery_ori = GMT(p0.orient, p1.orient, p2.orient, p3.orient, tw->splineBrowser->value(), t);
 
-	Pnt3f train_center = GMT(p0.pos, p1.pos, p2.pos, p3.pos, tw->splineBrowser->value(), t-percent) + train_ori_center * 2.0f;
-	Pnt3f train_forward = GMT(p0.pos, p1.pos, p2.pos, p3.pos, tw->splineBrowser->value(), t) + train_ori_forward * 2.0f;
-	gluLookAt(train_center.x, train_center.y, train_center.z,
-		train_forward.x, train_forward.y, train_forward.z, train_ori_center.x, train_ori_center.y, train_ori_center.z);
+	Pnt3f eye = GMT(p0.pos, p1.pos, p2.pos, p3.pos, tw->splineBrowser->value(), t-percent) + eye_ori * 2.0f;
+	Pnt3f centery = GMT(p0.pos, p1.pos, p2.pos, p3.pos, tw->splineBrowser->value(), t) + centery_ori * 2.0f;
+	gluLookAt(eye.x, eye.y, eye.z,
+		centery.x, centery.y, centery.z, eye_ori.x, eye_ori.y, eye_ori.z);
 }
 //************************************************************************
 //
@@ -540,10 +548,12 @@ void TrainView::drawStuff(bool doingShadows)
 //########################################################################
 //========================================================================
 void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
+	
 	float T = 0.0f;
 	float percent = 1.0f / DIVIDE_LINE;
 	Pnt3f lastqt;
 	bool Draw_Sleeper = false;
+
 	p = new double[m_pTrack->points.size()];
 	for (size_t i = 0; i < m_pTrack->points.size(); i++) {
 		ControlPoint& p1 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
@@ -563,7 +573,6 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 			orient_t = cross_t * forward;
 			orient_t.normalize();
 			cross_t = cross_t * 2.5f;
-			
 			if (!doingShadows) {
 				glColor3ub(77, 19, 0);
 			}
@@ -574,7 +583,7 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 			glVertex3f_Simplify(qt0 - cross_t);
 			glVertex3f_Simplify(qt1 - cross_t);
 			glEnd();
-			//¸ÉµeÅK­yÂ_µõ³B
+			//è£œç•«éµè»Œæ–·è£‚è™•
 			if (j != 0) {
 				glLineWidth(5);
 				glBegin(GL_LINES);
@@ -584,9 +593,9 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 				glVertex3f_Simplify(qt1 - cross_t);
 				glEnd();
 			}	
-			//¤õ¨®²¾°Ê
+			//ç«è»Šç§»å‹•
 			Path_Total += sqrtf(forward.x * forward.x + forward.y * forward.y + forward.z * forward.z);
-			//ÅK­y
+			//éµè»Œ
 			T+= sqrtf(forward.x * forward.x + forward.y * forward.y + forward.z * forward.z);
 			if (!Draw_Sleeper &&T >= Sleeper_Length) {
 				forward.normalize();
@@ -612,7 +621,6 @@ void TrainView::drawTrain(TrainView* TrainV, bool doingShadows) {
 	float t = t_time;
 	int i = floor(t);
 	t -= i;
-	cout << "i:" << i << endl;
 	
 	Pnt3f cp_pos_p1 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
 	Pnt3f cp_pos_p2 = m_pTrack->points[(i + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
@@ -638,10 +646,21 @@ void TrainView::drawTrain(TrainView* TrainV, bool doingShadows) {
 	forward.normalize();
 	forward =forward * 10;
 
+	float M_PI = 3.14159265358979323846;
+	int n = 300;
+	float R = 10.0f;
+	glBegin(GL_POLYGON);
+	for (int i = 0; i < n; i++)
+	{
+		glVertex2f(R * cos(2 * M_PI * i / n), R * sin(2 * M_PI * i / n));
+	}
+	glEnd();
+	glFlush();
+
 	if (!doingShadows) {
 		glColor3ub(64, 94, 15);
 	}
-	//¤W
+	//ä¸Š
 	glBegin(GL_QUADS);
 	glNormal3f(up.x, up.y, up.z);
 	glVertex3f_Simplify(qt0 + cross_t+up);
@@ -649,7 +668,7 @@ void TrainView::drawTrain(TrainView* TrainV, bool doingShadows) {
 	glVertex3f_Simplify(qt0+forward- cross_t+up);
 	glVertex3f_Simplify(qt0 - cross_t+up);
 	glEnd();
-	//¤U
+	//ä¸‹
 	glBegin(GL_QUADS);
 	glNormal3f(-up.x,-up.y, -up.z);
 	glVertex3f_Simplify(qt0 + cross_t);
@@ -657,7 +676,7 @@ void TrainView::drawTrain(TrainView* TrainV, bool doingShadows) {
 	glVertex3f_Simplify(qt0 + forward - cross_t);
 	glVertex3f_Simplify(qt0 - cross_t);
 	glEnd();
-	//«e
+	//å‰
 	glBegin(GL_QUADS);
 	glNormal3f(forward.x, forward.y, forward.z);
 	glVertex3f_Simplify(qt0 + forward - cross_t + up);
@@ -665,7 +684,7 @@ void TrainView::drawTrain(TrainView* TrainV, bool doingShadows) {
 	glVertex3f_Simplify(qt0 + forward + cross_t);
 	glVertex3f_Simplify(qt0 + forward - cross_t);
 	glEnd();
-	//«á
+	//å¾Œ
 	glBegin(GL_QUADS);
 	glNormal3f(-forward.x, -forward.y, -forward.z);
 	glVertex3f_Simplify(qt0  - cross_t + up);
@@ -673,7 +692,7 @@ void TrainView::drawTrain(TrainView* TrainV, bool doingShadows) {
 	glVertex3f_Simplify(qt0  + cross_t);
 	glVertex3f_Simplify(qt0  - cross_t);
 	glEnd();
-	//¥ª
+	//å·¦
 	glBegin(GL_QUADS);
 	glNormal3f(-cross_t.x, -cross_t.y, -cross_t.z);
 	glVertex3f_Simplify(qt0 + forward - cross_t + up);
@@ -681,7 +700,7 @@ void TrainView::drawTrain(TrainView* TrainV, bool doingShadows) {
 	glVertex3f_Simplify(qt0 - cross_t);
 	glVertex3f_Simplify(qt0 - cross_t+up);
 	glEnd();
-	//¥k
+	//å³
 	glBegin(GL_QUADS);
 	glNormal3f(cross_t.x, cross_t.y, cross_t.z);
 	glVertex3f_Simplify(qt0 + forward + cross_t + up);
