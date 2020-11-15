@@ -97,4 +97,5 @@ class TrainView : public Fl_Gl_Window
 		int countI = 0;
 		double* p;
 		vector<float>way0, way1, way2, way3;
+		int car_quantity = 1;
 };

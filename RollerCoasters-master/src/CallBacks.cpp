@@ -248,3 +248,15 @@ void rmzCB(Fl_Widget*, TrainWindow* tw)
 	rollz(tw, -1);
 }
 
+void AddCar(Fl_Widget*, TrainWindow* tw)
+//===========================================================================
+{
+	tw->trainView->car_quantity++;
+	cout << tw->trainView->car_quantity << endl;
+}
+void DeleteCar(Fl_Widget*, TrainWindow* tw)
+//===========================================================================
+{
+	if(tw->trainView->car_quantity>1)
+	tw->trainView->car_quantity--;
+}
