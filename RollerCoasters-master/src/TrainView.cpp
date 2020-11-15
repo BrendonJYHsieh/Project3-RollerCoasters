@@ -95,8 +95,8 @@ void glVertex3f_Simplify(Pnt3f q0) {
 }
 
 void initDirLight() {
-	float noAmbient[] = { 0.0f,0.0f,0.0f ,0.0f ,1.0f };
-	float whiteDiffuse[] = { 1.0,1.0f ,1.0f ,1.0f };
+	float noAmbient[] = { 0.0f,0.0f,0.0f,1.0f };
+	float whiteDiffuse[] = { 0.0,1.0f ,0.0f ,1.0f };
 	float position[] = { 50.0f,10.0f ,50.0f ,0.0f };
 
 	glLightfv(GL_LIGHT0, GL_AMBIENT, noAmbient);
@@ -155,6 +155,7 @@ void DrawSleeper(Pnt3f qt0, Pnt3f qt1, Pnt3f cross_t,Pnt3f orient_t, bool doingS
 	if (!doingShadows) {
 		glColor3ub(101, 50, 0);
 	}
+	glNormal3f(orient_t.x, orient_t.y, orient_t.z);
 	glBegin(GL_QUADS);
 	glVertex3f_Simplify(qt0 + cross_t);
 	glVertex3f_Simplify(qt1 + cross_t);
@@ -162,6 +163,7 @@ void DrawSleeper(Pnt3f qt0, Pnt3f qt1, Pnt3f cross_t,Pnt3f orient_t, bool doingS
 	glVertex3f_Simplify(qt0 - cross_t);
 	glEnd();
 
+	glNormal3f(-orient_t.x, -orient_t.y, -orient_t.z);
 	glBegin(GL_QUADS);
 	glVertex3f_Simplify(qt0 - orient_t + cross_t);
 	glVertex3f_Simplify(qt1 - orient_t + cross_t);
