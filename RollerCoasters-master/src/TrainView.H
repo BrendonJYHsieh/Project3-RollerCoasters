@@ -95,7 +95,7 @@ class TrainView : public Fl_Gl_Window
 
 		float Sleeper_Length = 3.0f;
 		float Sleeper_Interval = 6.0f;
-		float t_arc = 0.0f;
+		float Sleeper_Width = 3.0f;
 		int car_quantity = 1;
 		bool s = false;
 };
