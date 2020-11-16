@@ -217,6 +217,7 @@ advanceTrain(float dir)
 	else {
 		trainView->t_time += (dir * speed->value()/100);
 	}
+	cout << (dir * speed->value() / (trainView->p[temp])) << endl;
 	if (trainView->t_time >= trainView->m_pTrack->points.size()) {
 		trainView->t_time -= trainView->m_pTrack->points.size();
 	}

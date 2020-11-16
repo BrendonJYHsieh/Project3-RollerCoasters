@@ -253,10 +253,12 @@ void AddCar(Fl_Widget*, TrainWindow* tw)
 {
 	tw->trainView->car_quantity++;
 	cout << tw->trainView->car_quantity << endl;
+	tw->damageMe();
 }
 void DeleteCar(Fl_Widget*, TrainWindow* tw)
 //===========================================================================
 {
 	if(tw->trainView->car_quantity>1)
 	tw->trainView->car_quantity--;
+	tw->damageMe();
 }

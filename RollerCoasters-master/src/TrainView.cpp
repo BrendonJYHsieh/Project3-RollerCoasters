@@ -725,7 +725,6 @@ void TrainView::drawTrain(TrainView* TrainV, bool doingShadows) {
 		float tt = t_time - percent * 230*i;
 		int ii = floor(tt);
 		tt -= ii;
-		
 		Pnt3f cp_pos_p1 = m_pTrack->points[(ii - 1 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
 		Pnt3f cp_pos_p2 = m_pTrack->points[(ii + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
 		Pnt3f cp_pos_p3 = m_pTrack->points[(ii + 1 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
