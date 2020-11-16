@@ -201,6 +201,8 @@ void DrawSleeper(Pnt3f qt0, Pnt3f qt1, Pnt3f cross_t,Pnt3f orient_t, bool doingS
 	glVertex3f_Simplify(qt0 - orient_t + cross_t);
 	glVertex3f_Simplify(qt1 - orient_t + cross_t);
 	glEnd();
+}
+void DrawPillar(Pnt3f qt0, Pnt3f qt1, Pnt3f cross_t, Pnt3f orient_t, bool doingShadows) {
 	/*柱子*/
 	if (!doingShadows) {
 		glColor3ub(64, 17, 140);
@@ -237,7 +239,7 @@ void DrawSleeper(Pnt3f qt0, Pnt3f qt1, Pnt3f cross_t,Pnt3f orient_t, bool doingS
 	glVertex3f((qt1 - cross_t).x, 0.1, (qt1 - cross_t).z);
 	glEnd();
 	//後
-	glNormal3f(-(qt1-qt0).x, -(qt1 - qt0).y, -(qt1 - qt0).z);
+	glNormal3f(-(qt1 - qt0).x, -(qt1 - qt0).y, -(qt1 - qt0).z);
 	glBegin(GL_QUADS);
 	glVertex3f((qt0 - cross_t).x, (qt0 - cross_t).y, (qt0 - cross_t).z);
 	glVertex3f((qt0 + cross_t).x, (qt0 - cross_t).y, (qt0 + cross_t).z);
@@ -246,6 +248,7 @@ void DrawSleeper(Pnt3f qt0, Pnt3f qt1, Pnt3f cross_t,Pnt3f orient_t, bool doingS
 	glEnd();
 	/*柱子*/
 }
+
 void DrawTrain(Pnt3f qt0, Pnt3f cross_t, Pnt3f up, Pnt3f forward,bool doingShadows) {
 	if (!doingShadows) {
 		glColor3ub(101, 50, 0);
@@ -672,6 +675,7 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 	Pnt3f lastqt;
 	bool Draw_Sleeper = false;
 	bool check = false;
+	int count=0;
 	for (size_t i = 0; i < m_pTrack->points.size(); i++) {
 		float t = 0;
 		ControlPoint p1 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
@@ -720,8 +724,13 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 			}	
 			Sleep_Total += sqrt(forward.x * forward.x + forward.y * forward.y + forward.z * forward.z);
 			if (!Draw_Sleeper && Sleep_Total >= Sleeper_Length) {
+				count++;
 				forward.normalize();
 				DrawSleeper(qt0, qt0 - forward * Sleeper_Length, cross_t, orient_t, doingShadows);
+				if (count % 3 == 0) {
+					DrawPillar(qt0, qt0 - forward * Sleeper_Length, cross_t, orient_t, doingShadows);
+					count = 0;
+				}
 				Sleep_Total -= Sleeper_Length;
 				Draw_Sleeper = !Draw_Sleeper;
 			}
