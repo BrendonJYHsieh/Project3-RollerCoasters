@@ -96,7 +96,7 @@ void glVertex3f_Simplify(Pnt3f q0) {
 
 void initDirLight() {
 	float noAmbient[] = { 0.0f,0.0f,0.0f,1.0f };
-	float whiteDiffuse[] = { 0.0,1.0f ,0.0f ,1.0f };
+	float whiteDiffuse[] = { 1.0,1.0f ,0.0f ,1.0f };
 	float position[] = { 50.0f,10.0f ,50.0f ,0.0f };
 
 	glLightfv(GL_LIGHT0, GL_AMBIENT, noAmbient);
@@ -115,7 +115,6 @@ void initPosLight() {
 }
 
 void DrawSleeper(Pnt3f qt0, Pnt3f qt1, Pnt3f cross_t,Pnt3f orient_t, bool doingShadows) {
-
 	//畫鐵軌的線
 	if (!doingShadows) {
 		glColor3ub(0, 0, 0);
@@ -202,6 +201,50 @@ void DrawSleeper(Pnt3f qt0, Pnt3f qt1, Pnt3f cross_t,Pnt3f orient_t, bool doingS
 	glVertex3f_Simplify(qt0 - orient_t + cross_t);
 	glVertex3f_Simplify(qt1 - orient_t + cross_t);
 	glEnd();
+	/*柱子*/
+	if (!doingShadows) {
+		glColor3ub(64, 17, 140);
+	}
+	//下
+	glBegin(GL_QUADS);
+	glVertex3f((qt0 + cross_t).x, 0.1, (qt0 + cross_t).z);
+	glVertex3f((qt1 + cross_t).x, 0.1, (qt1 + cross_t).z);
+	glVertex3f((qt1 - cross_t).x, 0.1, (qt1 - cross_t).z);
+	glVertex3f((qt0 - cross_t).x, 0.1, (qt0 - cross_t).z);
+	glEnd();
+	//右
+	glNormal3f(cross_t.x, cross_t.y, cross_t.z);
+	glBegin(GL_QUADS);
+	glVertex3f((qt0 + cross_t).x, (qt0 + cross_t).y, (qt0 + cross_t).z);
+	glVertex3f((qt1 + cross_t).x, (qt1 + cross_t).y, (qt1 + cross_t).z);
+	glVertex3f((qt1 + cross_t).x, 0.1, (qt1 + cross_t).z);
+	glVertex3f((qt0 + cross_t).x, 0.1, (qt0 + cross_t).z);
+	glEnd();
+	//左
+	glNormal3f(-cross_t.x, -cross_t.y, -cross_t.z);
+	glBegin(GL_QUADS);
+	glVertex3f((qt0 - cross_t).x, (qt0 - cross_t).y, (qt0 - cross_t).z);
+	glVertex3f((qt1 - cross_t).x, (qt1 - cross_t).y, (qt1 - cross_t).z);
+	glVertex3f((qt1 - cross_t).x, 0.1, (qt1 - cross_t).z);
+	glVertex3f((qt0 - cross_t).x, 0.1, (qt0 - cross_t).z);
+	glEnd();
+	//前
+	glNormal3f((qt1 - qt0).x, (qt1 - qt0).y, (qt1 - qt0).z);
+	glBegin(GL_QUADS);
+	glVertex3f((qt1 - cross_t).x, (qt1 - cross_t).y, (qt1 - cross_t).z);
+	glVertex3f((qt1 + cross_t).x, (qt1 - cross_t).y, (qt1 + cross_t).z);
+	glVertex3f((qt1 + cross_t).x, 0.1, (qt1 + cross_t).z);
+	glVertex3f((qt1 - cross_t).x, 0.1, (qt1 - cross_t).z);
+	glEnd();
+	//後
+	glNormal3f(-(qt1-qt0).x, -(qt1 - qt0).y, -(qt1 - qt0).z);
+	glBegin(GL_QUADS);
+	glVertex3f((qt0 - cross_t).x, (qt0 - cross_t).y, (qt0 - cross_t).z);
+	glVertex3f((qt0 + cross_t).x, (qt0 - cross_t).y, (qt0 + cross_t).z);
+	glVertex3f((qt0 + cross_t).x, 0.1, (qt0 + cross_t).z);
+	glVertex3f((qt0 - cross_t).x, 0.1, (qt0 - cross_t).z);
+	glEnd();
+	/*柱子*/
 }
 void DrawTrain(Pnt3f qt0, Pnt3f cross_t, Pnt3f up, Pnt3f forward,bool doingShadows) {
 	if (!doingShadows) {
@@ -756,7 +799,7 @@ void TrainView::drawTrain(TrainView* TrainV, bool doingShadows) {
 					break;
 				}
 				t = 1.0f;
-				--i;
+				i-=1;
 				if (i < 0) {
 					i = m_pTrack->points.size() - 1;
 				}
