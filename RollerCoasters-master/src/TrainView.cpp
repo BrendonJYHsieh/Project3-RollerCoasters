@@ -733,6 +733,7 @@ void TrainView::drawTrain(TrainView* TrainV, bool doingShadows) {
 			Pnt3f qt0 = GMT(cp_pos_p1, cp_pos_p2, cp_pos_p3, cp_pos_p4, TrainV->tw->splineBrowser->value(), t);
 			t += percent;
 			Pnt3f qt1 = GMT(cp_pos_p1, cp_pos_p2, cp_pos_p3, cp_pos_p4, TrainV->tw->splineBrowser->value(), t);
+
 			Pnt3f cross_t = (qt1 - qt0) * orient_t;
 			cross_t.normalize();
 			orient_t = cross_t * (qt1 - qt0);
