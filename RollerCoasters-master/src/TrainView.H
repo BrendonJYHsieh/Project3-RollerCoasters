@@ -88,14 +88,14 @@ class TrainView : public Fl_Gl_Window
 		CTrack*			m_pTrack;		// The track of the 
 		float DIVIDE_LINE = 1000.0f;
 		float t_time = 0.0f;
+
 		float t_i = 0.0f;
+		float t_t = 0.0f;
+		float Path_Total = 0.0f;
+
 		float Sleeper_Length = 3.0f;
 		float Sleeper_Interval = 6.0f;
-		float Path_Length = 0.3f;
-		float Path_Total = 0.0;
-		float countJ=0;
-		int countI = 0;
-		double* p;
-		vector<float>way0, way1, way2, way3;
+		float t_arc = 0.0f;
 		int car_quantity = 1;
+		bool s = false;
 };

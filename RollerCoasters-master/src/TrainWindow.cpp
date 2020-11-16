@@ -202,26 +202,23 @@ advanceTrain(float dir)
 	//#####################################################################
 	// TODO: make this work for your train
 	//#####################################################################
-	int temp = floor(trainView->t_time);
 	if (trainView->tw->arcLength->value()) {
-		if (temp > -1 && temp < trainView->m_pTrack->points.size()) {
-			if (trainView->p[temp] < 1) {
-				trainView->t_time += (dir * speed->value() * (trainView->p[temp]));
-			}
-			else {
-				trainView->t_time += (dir * speed->value() / (trainView->p[temp]));
-			}
+		m_Track.trainU += 1.0f * speed->value();
+		if (m_Track.trainU > trainView->t_arc) {
+			m_Track.trainU -= trainView->t_arc;
 		}
-		
 	}
 	else {
+		if (trainView->tw->arcLength->value() != trainView->s) {
+			trainView->t_time = trainView->t_t + trainView->t_i;
+		}
 		trainView->t_time += (dir * speed->value()/100);
+		m_Track.trainU += 1.0f * speed->value();
 	}
-	cout << (dir * speed->value() / (trainView->p[temp])) << endl;
 	if (trainView->t_time >= trainView->m_pTrack->points.size()) {
 		trainView->t_time -= trainView->m_pTrack->points.size();
 	}
-	
+	trainView->s = trainView->tw->arcLength->value();
 #ifdef EXAMPLE_SOLUTION
 	// note - we give a little bit more example code here than normal,
 	// so you can see how this works
