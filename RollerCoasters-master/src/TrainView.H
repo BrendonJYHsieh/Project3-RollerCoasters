@@ -99,7 +99,7 @@ class TrainView : public Fl_Gl_Window
 
 		float Train_Forward = 10.0f;
 		float Train_Height = 5.0f;
-
+		float Train_Width = 2.0f;
 
 		int car_quantity = 1;
 		bool s = false;

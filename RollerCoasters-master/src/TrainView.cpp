@@ -553,18 +553,18 @@ void TrainView::trainCamView(TrainView* TrainV, float aspect) {
 		i = floor(t_time);
 		t = t_time - i;
 	}
-	ControlPoint p0 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
-	ControlPoint p1 = m_pTrack->points[(i + m_pTrack->points.size()) % m_pTrack->points.size()];
-	ControlPoint p2 = m_pTrack->points[(i + 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
-	ControlPoint p3 = m_pTrack->points[(i + 2 + m_pTrack->points.size()) % m_pTrack->points.size()];
+	ControlPoint p1 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
+	ControlPoint p2 = m_pTrack->points[(i + m_pTrack->points.size()) % m_pTrack->points.size()];
+	ControlPoint p3 = m_pTrack->points[(i + 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
+	ControlPoint p4 = m_pTrack->points[(i + 2 + m_pTrack->points.size()) % m_pTrack->points.size()];
 
-	Pnt3f eye_ori = GMT(p0.orient, p1.orient, p2.orient, p3.orient, tw->splineBrowser->value(), t-percent);
-	Pnt3f centery_ori = GMT(p0.orient, p1.orient, p2.orient, p3.orient, tw->splineBrowser->value(), t);
+	Pnt3f eye_orient = GMT(p1.orient, p2.orient, p3.orient, p4.orient, tw->splineBrowser->value(), t-percent);
+	Pnt3f centery_ori = GMT(p1.orient, p2.orient, p3.orient, p4.orient, tw->splineBrowser->value(), t);
 
-	Pnt3f eye = GMT(p0.pos, p1.pos, p2.pos, p3.pos, tw->splineBrowser->value(), t-percent) + eye_ori * 2.0f;
-	Pnt3f centery = GMT(p0.pos, p1.pos, p2.pos, p3.pos, tw->splineBrowser->value(), t) + centery_ori * 2.0f;
+	Pnt3f eye = GMT(p1.pos, p2.pos, p3.pos, p4.pos, tw->splineBrowser->value(), t-percent) + eye_orient * 2.0f;
+	Pnt3f centery = GMT(p1.pos, p2.pos, p3.pos, p4.pos, tw->splineBrowser->value(), t) + centery_ori * 2.0f;
 	gluLookAt(eye.x, eye.y, eye.z,
-		centery.x, centery.y, centery.z, eye_ori.x, eye_ori.y, eye_ori.z);
+		centery.x, centery.y, centery.z, eye_orient.x, eye_orient.y, eye_orient.z);
 }
 //************************************************************************
 //
@@ -631,10 +631,10 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 	bool check = false;
 	for (size_t i = 0; i < m_pTrack->points.size(); i++) {
 		float t = 0;
-		ControlPoint& p1 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
-		ControlPoint& p2 = m_pTrack->points[(i + m_pTrack->points.size()) % m_pTrack->points.size()];
-		ControlPoint& p3 = m_pTrack->points[(i + 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
-		ControlPoint& p4 = m_pTrack->points[(i + 2 + m_pTrack->points.size()) % m_pTrack->points.size()];
+		ControlPoint p1 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
+		ControlPoint p2 = m_pTrack->points[(i + m_pTrack->points.size()) % m_pTrack->points.size()];
+		ControlPoint p3 = m_pTrack->points[(i + 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
+		ControlPoint p4 = m_pTrack->points[(i + 2 + m_pTrack->points.size()) % m_pTrack->points.size()];
 		for (size_t j = 0; j < DIVIDE_LINE; j++) {
 			Pnt3f qt0 = GMT(p1.pos, p2.pos, p3.pos, p4.pos, TrainV->tw->splineBrowser->value(), t);
 			Pnt3f orient_t= GMT(p1.orient, p2.orient, p3.orient, p4.orient,TrainV->tw->splineBrowser->value(), t);
@@ -646,7 +646,7 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 			orient_t.normalize();
 			cross_t = cross_t * Sleeper_Width;
 			/*火車移動*/
-			Path_Total += sqrtf(forward.x * forward.x + forward.y * forward.y + forward.z * forward.z);
+			Path_Total += sqrt(forward.x * forward.x + forward.y * forward.y + forward.z * forward.z);
 			if (!check && Path_Total > TrainV->m_pTrack->trainU) {
 				t_t = t;
 				t_i = i;
@@ -675,7 +675,7 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 				glVertex3f_Simplify(qt1 - cross_t);
 				glEnd();
 			}	
-			Sleep_Total += sqrtf(forward.x * forward.x + forward.y * forward.y + forward.z * forward.z);
+			Sleep_Total += sqrt(forward.x * forward.x + forward.y * forward.y + forward.z * forward.z);
 			if (!Draw_Sleeper && Sleep_Total >= Sleeper_Length) {
 				forward.normalize();
 				DrawSleeper(qt0, qt0 - forward * Sleeper_Length, cross_t, orient_t, doingShadows);
@@ -719,60 +719,61 @@ void TrainView::drawTrain(TrainView* TrainV, bool doingShadows) {
 		if (TrainV->tw->arcLength->value()) {
 			bool check = false;
 
-			Pnt3f cp_pos_p1 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
-			Pnt3f cp_pos_p2 = m_pTrack->points[(i + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
-			Pnt3f cp_pos_p3 = m_pTrack->points[(i + 1 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
-			Pnt3f cp_pos_p4 = m_pTrack->points[(i + 2 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
-			// orient
-			Pnt3f cp_orient_p1 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()].orient;
-			Pnt3f cp_orient_p2 = m_pTrack->points[(i + m_pTrack->points.size()) % m_pTrack->points.size()].orient;
-			Pnt3f cp_orient_p3 = m_pTrack->points[(i + 1 + m_pTrack->points.size()) % m_pTrack->points.size()].orient;
-			Pnt3f cp_orient_p4 = m_pTrack->points[(i + 2 + m_pTrack->points.size()) % m_pTrack->points.size()].orient;
+			ControlPoint p1 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
+			ControlPoint p2 = m_pTrack->points[(i + m_pTrack->points.size()) % m_pTrack->points.size()];
+			ControlPoint p3 = m_pTrack->points[(i + 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
+			ControlPoint p4 = m_pTrack->points[(i + 2 + m_pTrack->points.size()) % m_pTrack->points.size()];
 
-			Pnt3f orient_t = GMT(cp_orient_p1, cp_orient_p2, cp_orient_p3, cp_orient_p4, TrainV->tw->splineBrowser->value(), t);
-			Pnt3f qt0 = GMT(cp_pos_p1, cp_pos_p2, cp_pos_p3, cp_pos_p4, TrainV->tw->splineBrowser->value(), t);
-			t += percent;
-			Pnt3f qt1 = GMT(cp_pos_p1, cp_pos_p2, cp_pos_p3, cp_pos_p4, TrainV->tw->splineBrowser->value(), t);
+			Pnt3f qt0 = GMT(p1.pos, p2.pos, p3.pos, p4.pos, TrainV->tw->splineBrowser->value(), t);
+			Pnt3f orient_t = GMT(p1.orient, p2.orient, p3.orient, p4.orient, TrainV->tw->splineBrowser->value(), t);
+			Pnt3f qt1 = GMT(p1.pos, p2.pos, p3.pos, p4.pos, TrainV->tw->splineBrowser->value(), t += percent);
 
 			Pnt3f cross_t = (qt1 - qt0) * orient_t;
 			cross_t.normalize();
 			orient_t = cross_t * (qt1 - qt0);
 			orient_t.normalize();
-			cross_t = cross_t * 2.5f;
-			Pnt3f up = orient_t * 5;
+			cross_t = cross_t * Train_Width;
+			Pnt3f up = orient_t * Train_Height;
 			Pnt3f forward = (qt1 - qt0);
 			forward.normalize();
-			forward = forward * 10;
+			forward = forward * Train_Forward;
 
 			float total = 0.0f;
 
 			DrawTrain(qt0, cross_t, up, forward, doingShadows);
-			while (1) {
-				for (t; t >= 0; t -= percent) {
-					qt0 = GMT(cp_pos_p1, cp_pos_p2, cp_pos_p3, cp_pos_p4, TrainV->tw->splineBrowser->value(), t);
-					qt1 = GMT(cp_pos_p1, cp_pos_p2, cp_pos_p3, cp_pos_p4, TrainV->tw->splineBrowser->value(), t + percent);
+			while (!check) {
+				for (t; t >= 0; t =t- percent) {
+					qt0 = GMT(p1.pos, p2.pos, p3.pos, p4.pos, TrainV->tw->splineBrowser->value(), t);
+					qt1 = GMT(p1.pos, p2.pos, p3.pos, p4.pos, TrainV->tw->splineBrowser->value(), t + percent);
 					forward = qt1 - qt0;
-					total += sqrtf(forward.x * forward.x + forward.y * forward.y + forward.z * forward.z);
-					if (total >= 12) goto find_next_car;
+					total += sqrt(forward.x * forward.x + forward.y * forward.y + forward.z * forward.z);
+					if (total >= 12) {
+						check = true;
+						break;
+					}
+				}
+				if (check) {
+					break;
 				}
 				t = 1.0f;
 				--i;
-				if (i < 0) i = m_pTrack->points.size() - 1;
-				cp_pos_p1 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
-				cp_pos_p2 = m_pTrack->points[(i + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
-				cp_pos_p3 = m_pTrack->points[(i + 1 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
-				cp_pos_p4 = m_pTrack->points[(i + 2 + m_pTrack->points.size()) % m_pTrack->points.size()].pos;
+				if (i < 0) {
+					i = m_pTrack->points.size() - 1;
+				}
+				p1 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
+				p2 = m_pTrack->points[(i + m_pTrack->points.size()) % m_pTrack->points.size()];
+				p3 = m_pTrack->points[(i + 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
+				p4 = m_pTrack->points[(i + 2 + m_pTrack->points.size()) % m_pTrack->points.size()];
 			}
-		find_next_car:;
 		}
 		else {
 			float tt = t_time - percent * 200 * (j - 1);
 			int ii = floor(tt);
 			tt -= ii;
-			ControlPoint& p1 = m_pTrack->points[(ii - 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
-			ControlPoint& p2 = m_pTrack->points[(ii + m_pTrack->points.size()) % m_pTrack->points.size()];
-			ControlPoint& p3 = m_pTrack->points[(ii + 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
-			ControlPoint& p4 = m_pTrack->points[(ii + 2 + m_pTrack->points.size()) % m_pTrack->points.size()];
+			ControlPoint p1 = m_pTrack->points[(ii - 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
+			ControlPoint p2 = m_pTrack->points[(ii + m_pTrack->points.size()) % m_pTrack->points.size()];
+			ControlPoint p3 = m_pTrack->points[(ii + 1 + m_pTrack->points.size()) % m_pTrack->points.size()];
+			ControlPoint p4 = m_pTrack->points[(ii + 2 + m_pTrack->points.size()) % m_pTrack->points.size()];
 
 			Pnt3f qt0 = GMT(p1.pos, p2.pos, p3.pos, p4.pos, TrainV->tw->splineBrowser->value(), tt);
 			Pnt3f orient_t = GMT(p1.orient, p2.orient, p3.orient, p4.orient, TrainV->tw->splineBrowser->value(), tt);
@@ -782,11 +783,11 @@ void TrainView::drawTrain(TrainView* TrainV, bool doingShadows) {
 			cross_t.normalize();
 			orient_t = cross_t * (qt1 - qt0);
 			orient_t.normalize();
-			cross_t = cross_t * 2.5f;
-			Pnt3f up = orient_t * 5;
+			cross_t = cross_t * Train_Width;
+			Pnt3f up = orient_t * Train_Height;
 			Pnt3f forward = (qt1 - qt0);
 			forward.normalize();
-			forward = forward * 10;
+			forward = forward * Train_Forward;
 			DrawTrain(qt0, cross_t, up, forward, doingShadows);
 		}
 	}
