@@ -895,6 +895,7 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 			if (!doingShadows) {
 				glColor3ub(77, 19, 0);
 			}
+			glNormal3f(orient_t.x, orient_t.y, orient_t.z);
 			glLineWidth(5);
 			glBegin(GL_LINES);
 			glVertex3f_Simplify(qt0 + cross_t);
@@ -904,6 +905,7 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 			glEnd();
 			//補畫鐵軌斷裂處
 			if (j != 0) {
+				glNormal3f(orient_t.x, orient_t.y, orient_t.z);
 				glLineWidth(5);
 				glBegin(GL_LINES);
 				glVertex3f_Simplify(lastqt + cross_t);
@@ -946,9 +948,6 @@ void TrainView::drawTrain(TrainView* TrainV, bool doingShadows) {
 		i = floor(t_time);
 		t = t_time - i;
 	}
-	float M_PI = 3.14159265358979323846;
-	int n = 3;
-	float R = 10.0f;
 	
 	for (int j = 1; j <= car_quantity; j++) {
 		if (TrainV->tw->arcLength->value()) {
@@ -971,13 +970,6 @@ void TrainView::drawTrain(TrainView* TrainV, bool doingShadows) {
 			Pnt3f forward = (qt1 - qt0);
 			forward.normalize();
 			forward = forward * Train_Forward;
-			/*glBegin(GL_POLYGON);
-			for (int i = 0; i < n; i++)
-			{
-				glVertex3f(R * cos(2 * M_PI * i / n)+qt0.x, R * sin(2 * M_PI * i / n)+qt0.y,qt0.z);
-			}
-			glEnd();
-			glFlush();*/
 
 			float total = 0.0f;
 			if (j == 1) {
