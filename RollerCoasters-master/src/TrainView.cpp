@@ -804,9 +804,19 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 			orient_t = cross_t * forward;
 			orient_t.normalize();
 			cross_t = cross_t * Sleeper_Width;
+			
 			/*火車移動*/
 			Path_Total += sqrt(forward.x * forward.x + forward.y * forward.y + forward.z * forward.z);
 			if (!check && Path_Total > TrainV->m_pTrack->trainU) {
+				if (qt1.y - qt0.y > 0) {
+					physical = qt0.y - qt1.y;
+				}
+				else if (qt1.y - qt0.y < 0) {
+					physical = qt0.y - qt1.y;
+				}
+				else {
+					physical = 0;
+				}
 				t_t = t;
 				t_i = i;
 				check = true;

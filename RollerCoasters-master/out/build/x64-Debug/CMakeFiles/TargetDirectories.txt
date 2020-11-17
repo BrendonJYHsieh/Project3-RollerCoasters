@@ -1,0 +1,4 @@
+C:/Project3-RollerCoasters/RollerCoasters-master/out/build/x64-Debug/CMakeFiles/RollerCoasters.dir
+C:/Project3-RollerCoasters/RollerCoasters-master/out/build/x64-Debug/CMakeFiles/Utilities.dir
+C:/Project3-RollerCoasters/RollerCoasters-master/out/build/x64-Debug/CMakeFiles/edit_cache.dir
+C:/Project3-RollerCoasters/RollerCoasters-master/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir
