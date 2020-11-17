@@ -76,7 +76,7 @@ class TrainView : public Fl_Gl_Window
 
 		// Reset the Arc ball control
 		void resetArcball();
-
+		Pnt3f GMT(Pnt3f p1, Pnt3f p2, Pnt3f p3, Pnt3f p4, float mode, float t);
 		// pick a point (for when the mouse goes down)
 		void doPick();
 
@@ -100,7 +100,7 @@ class TrainView : public Fl_Gl_Window
 		float Train_Forward = 10.0f;
 		float Train_Height = 5.0f;
 		float Train_Width = 2.0f;
-
-		int car_quantity = 1;
+		float tense = 0.5f;
+		int car_quantity = 2;
 		bool s = false;
 };

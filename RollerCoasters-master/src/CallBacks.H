@@ -49,6 +49,8 @@ void loadCB(Fl_Widget*, TrainWindow* tw);
 void saveCB(Fl_Widget*, TrainWindow* tw);
 void AddCar(Fl_Widget*, TrainWindow* tw);
 void DeleteCar(Fl_Widget*, TrainWindow* tw);
+void Tension_Increase(Fl_Widget*, TrainWindow* tw);
+void Tension_Decrease(Fl_Widget*, TrainWindow* tw);
 // roll the control points
 // Rotate the selected control point  about x axis by one more degree
 void rpxCB(Fl_Widget*, TrainWindow* tw);

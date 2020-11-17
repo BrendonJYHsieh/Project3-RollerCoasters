@@ -252,13 +252,20 @@ void AddCar(Fl_Widget*, TrainWindow* tw)
 //===========================================================================
 {
 	tw->trainView->car_quantity++;
-	cout << tw->trainView->car_quantity << endl;
 	tw->damageMe();
 }
 void DeleteCar(Fl_Widget*, TrainWindow* tw)
 //===========================================================================
 {
-	if(tw->trainView->car_quantity>1)
+	if(tw->trainView->car_quantity>2)
 	tw->trainView->car_quantity--;
+	tw->damageMe();
+}
+void Tension_Increase(Fl_Widget*, TrainWindow* tw) {
+	tw->trainView->tense += 0.1;
+	tw->damageMe();
+}
+void Tension_Decrease(Fl_Widget*, TrainWindow* tw) {
+	tw->trainView->tense -= 0.1;
 	tw->damageMe();
 }

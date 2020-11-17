@@ -146,6 +146,14 @@ TrainWindow(const int x, const int y)
 		add_car->callback((Fl_Callback*)AddCar, this);
 		Fl_Button* delete_car = new Fl_Button(675, pty, 75, 20, "Delete Car");
 		delete_car->callback((Fl_Callback*)DeleteCar, this);
+
+		
+		pty += 30;
+		Fl_Button* tension_increase = new Fl_Button(605, pty, 130, 20, "Tension_Increase");
+		tension_increase->callback((Fl_Callback*)Tension_Increase, this);
+		pty += 30;
+		Fl_Button* tension_decrease = new Fl_Button(605, pty, 130, 20, "Tension_Decrease");
+		tension_decrease->callback((Fl_Callback*)Tension_Decrease, this);
 		// TODO: add widgets for all of your fancier features here
 #ifdef EXAMPLE_SOLUTION
 		makeExampleWidgets(this,pty);
