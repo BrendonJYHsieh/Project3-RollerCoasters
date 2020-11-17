@@ -891,6 +891,7 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 				}
 				else if (qt1.y - qt0.y < 0) {
 					physical = qt0.y - qt1.y;
+					physical *= 0.7;
 				}
 				else {
 					physical = 0;
