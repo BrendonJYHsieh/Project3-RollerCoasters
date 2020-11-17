@@ -300,6 +300,48 @@ void DrawTrain(Pnt3f qt0, Pnt3f cross_t, Pnt3f up, Pnt3f forward,bool doingShado
 	glVertex3f_Simplify(qt0 + cross_t);
 	glVertex3f_Simplify(qt0 + cross_t + up);
 	glEnd();
+	if (!doingShadows) {
+		glColor3ub(0, 0, 0);
+	}
+	//後輪
+	glBegin(GL_POLYGON);
+	glVertex3f_Simplify(qt0 - cross_t * 1.2);
+	glVertex3f_Simplify(qt0 - cross_t * 1.2 + forward * 0.1);
+	glVertex3f_Simplify(qt0 - cross_t * 1.2 + forward * 0.2 + up * 0.2);
+	glVertex3f_Simplify(qt0 - cross_t * 1.2 + forward * 0.1 + up * 0.4);
+	glVertex3f_Simplify(qt0 - cross_t * 1.2 + up * 0.4);
+	glVertex3f_Simplify(qt0 - cross_t * 1.2 - forward * 0.1 + up * 0.2);
+	glEnd();
+	glFlush();
+	//前輪
+	glBegin(GL_POLYGON);
+	glVertex3f_Simplify(qt0 - cross_t * 1.2 + forward * 0.9);
+	glVertex3f_Simplify(qt0 - cross_t * 1.2 + forward * 1);
+	glVertex3f_Simplify(qt0 - cross_t * 1.2 + forward * 1.1 + up * 0.2);
+	glVertex3f_Simplify(qt0 - cross_t * 1.2 + forward * 1 + up * 0.4);
+	glVertex3f_Simplify(qt0 - cross_t * 1.2 + up * 0.4 + forward * 0.9);
+	glVertex3f_Simplify(qt0 - cross_t * 1.2 + forward * 0.8 + up * 0.2);
+	glEnd();
+	glFlush();
+	//前輪
+	glBegin(GL_POLYGON);
+	glVertex3f_Simplify(qt0 + cross_t * 1.2);
+	glVertex3f_Simplify(qt0 + cross_t * 1.2 + forward * 0.1);
+	glVertex3f_Simplify(qt0 + cross_t * 1.2 + forward * 0.2 + up * 0.2);
+	glVertex3f_Simplify(qt0 + cross_t * 1.2 + forward * 0.1 + up * 0.4);
+	glVertex3f_Simplify(qt0 + cross_t * 1.2 + up * 0.4);
+	glVertex3f_Simplify(qt0 + cross_t * 1.2 - forward * 0.1 + up * 0.2);
+	glEnd();
+	glFlush();
+	//前輪                  
+	glBegin(GL_POLYGON);
+	glVertex3f_Simplify(qt0 + cross_t * 1.2 + forward * 0.9);
+	glVertex3f_Simplify(qt0 + cross_t * 1.2 + forward * 1);
+	glVertex3f_Simplify(qt0 + cross_t * 1.2 + forward * 1.1 + up * 0.2);
+	glVertex3f_Simplify(qt0 + cross_t * 1.2 + forward * 1 + up * 0.4);
+	glVertex3f_Simplify(qt0 + cross_t * 1.2 + up * 0.4 + forward * 0.9);
+	glVertex3f_Simplify(qt0 + cross_t * 1.2 + forward * 0.8 + up * 0.2);
+	glEnd();
 }
 
 void DrawTrainHead(Pnt3f qt0, Pnt3f cross_t, Pnt3f up, Pnt3f forward, bool doingShadows) {
@@ -398,6 +440,50 @@ void DrawTrainHead(Pnt3f qt0, Pnt3f cross_t, Pnt3f up, Pnt3f forward, bool doing
 	glVertex3f_Simplify(qt0 + forward * length + cross_t);
 	glVertex3f_Simplify(qt0 + cross_t);
 	glVertex3f_Simplify(qt0 + cross_t + up * height);
+	glEnd();
+	cross_t = cross_t / 1.2;
+	forward = forward / 1.5;
+	if (!doingShadows) {
+		glColor3ub(0, 0, 0);
+	}
+	//後輪
+	glBegin(GL_POLYGON);
+	glVertex3f_Simplify(qt0 - cross_t * 1.4);
+	glVertex3f_Simplify(qt0 - cross_t * 1.4 + forward * 0.1);
+	glVertex3f_Simplify(qt0 - cross_t * 1.4 + forward * 0.2 + up * 0.2);
+	glVertex3f_Simplify(qt0 - cross_t * 1.4 + forward * 0.1 + up * 0.4);
+	glVertex3f_Simplify(qt0 - cross_t * 1.4 + up * 0.4);
+	glVertex3f_Simplify(qt0 - cross_t * 1.4 - forward * 0.1 + up * 0.2);
+	glEnd();
+	glFlush();
+	//前輪
+	glBegin(GL_POLYGON);
+	glVertex3f_Simplify(qt0 - cross_t * 1.2 + forward * 0.9);
+	glVertex3f_Simplify(qt0 - cross_t * 1.2 + forward * 1);
+	glVertex3f_Simplify(qt0 - cross_t * 1.2 + forward * 1.1 + up * 0.2);
+	glVertex3f_Simplify(qt0 - cross_t * 1.2 + forward * 1 + up * 0.4);
+	glVertex3f_Simplify(qt0 - cross_t * 1.2 + up * 0.4 + forward * 0.9);
+	glVertex3f_Simplify(qt0 - cross_t * 1.2 + forward * 0.8 + up * 0.2);
+	glEnd();
+	glFlush();
+	//前輪
+	glBegin(GL_POLYGON);
+	glVertex3f_Simplify(qt0 + cross_t * 1.4);
+	glVertex3f_Simplify(qt0 + cross_t * 1.4 + forward * 0.1);
+	glVertex3f_Simplify(qt0 + cross_t * 1.4 + forward * 0.2 + up * 0.2);
+	glVertex3f_Simplify(qt0 + cross_t * 1.4 + forward * 0.1 + up * 0.4);
+	glVertex3f_Simplify(qt0 + cross_t * 1.4 + up * 0.4);
+	glVertex3f_Simplify(qt0 + cross_t * 1.4 - forward * 0.1 + up * 0.2);
+	glEnd();
+	glFlush();
+	//前輪                  
+	glBegin(GL_POLYGON);
+	glVertex3f_Simplify(qt0 + cross_t * 1.2 + forward * 0.9);
+	glVertex3f_Simplify(qt0 + cross_t * 1.2 + forward * 1);
+	glVertex3f_Simplify(qt0 + cross_t * 1.2 + forward * 1.1 + up * 0.2);
+	glVertex3f_Simplify(qt0 + cross_t * 1.2 + forward * 1 + up * 0.4);
+	glVertex3f_Simplify(qt0 + cross_t * 1.2 + up * 0.4 + forward * 0.9);
+	glVertex3f_Simplify(qt0 + cross_t * 1.2 + forward * 0.8 + up * 0.2);
 	glEnd();
 }
 //************************************************************************
@@ -577,6 +663,8 @@ void TrainView::draw()
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT1);
+	glEnable(GL_LIGHT2);
 	// top view only needs one light
 	if (tw->topCam->value()) {
 		glDisable(GL_LIGHT1);
@@ -601,18 +689,6 @@ void TrainView::draw()
 	initDirLight();
 	initPosLight();
 
-	float noAmbient[] = { 0.0f,0.0f ,0.2f ,1.0f };
-	float diffuse[] = { 0.0f,0.0f ,1.0f ,1.0f };
-	float position[] = { 1.0f,0.0f ,0.0f ,1.0f };
-	float direction[] = { 0.0f,0.0f,-1.0f,0.0f };
-	glLightfv(GL_LIGHT2, GL_AMBIENT, noAmbient);
-	glLightfv(GL_LIGHT2, GL_DIFFUSE, diffuse);
-	glLightfv(GL_LIGHT2, GL_POSITION, position);
-
-	glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, direction);
-	glLightf(GL_LIGHT2, GL_SPOT_CUTOFF, 60.0f);
-	glLightf(GL_LIGHT2, GL_SPOT_EXPONENT, 15.0f);
-	glEnable(GL_LIGHT2);
 
 	/*glLightfv(GL_LIGHT0, GL_POSITION, lightPosition1);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, whiteLight);
@@ -860,7 +936,6 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 				Draw_Sleeper = !Draw_Sleeper;
 			}
 			lastqt = qt0;
-			/*鐵軌*/
 		}
 	}
 }
@@ -928,7 +1003,7 @@ void TrainView::drawTrain(TrainView* TrainV, bool doingShadows) {
 					qt1 = GMT(p1.pos, p2.pos, p3.pos, p4.pos, TrainV->tw->splineBrowser->value(), t + percent);
 					forward = qt1 - qt0;
 					total += sqrt(forward.x * forward.x + forward.y * forward.y + forward.z * forward.z);
-					if (total >= 12) {
+					if (total >= 13) {
 						check = true;
 						break;
 					}
@@ -969,7 +1044,12 @@ void TrainView::drawTrain(TrainView* TrainV, bool doingShadows) {
 			Pnt3f forward = (qt1 - qt0);
 			forward.normalize();
 			forward = forward * Train_Forward;
-			DrawTrain(qt0, cross_t, up, forward, doingShadows);
+			if (j == 1) {
+				DrawTrainHead(qt0, cross_t, up, forward, doingShadows);
+			}
+			else {
+				DrawTrain(qt0, cross_t, up, forward, doingShadows);
+			}
 		}
 	}
 }
