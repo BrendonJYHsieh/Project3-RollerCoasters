@@ -37,6 +37,7 @@
 #include "TrainView.H"
 #include "TrainWindow.H"
 #include "Utilities/3DUtils.H"
+#include <GL/glut.h>
 
 
 #ifdef EXAMPLE_SOLUTION
@@ -864,6 +865,7 @@ void TrainView::drawTrack(TrainView* TrainV, bool doingShadows) {
 	bool Draw_Sleeper = false;
 	bool check = false;
 	int count=0;
+	//glutSolidSphere(0.7f, 15, 15);
 	for (size_t i = 0; i < m_pTrack->points.size(); i++) {
 		float t = 0;
 		ControlPoint p1 = m_pTrack->points[(i - 1 + m_pTrack->points.size()) % m_pTrack->points.size()];

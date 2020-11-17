@@ -84,6 +84,11 @@
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>C:\Project3-RollerCoasters\RollerCoasters-master\lib;C:\Project3-RollerCoasters\RollerCoasters-master\include;$(IncludePath)</IncludePath>
+    <ExecutablePath>C:\Project3-RollerCoasters\RollerCoasters-master\lib;$(ExecutablePath)</ExecutablePath>
+    <LibraryPath>C:\Project3-RollerCoasters\RollerCoasters-master\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>C:\Project3-RollerCoasters\RollerCoasters-master\include;C:\Project3-RollerCoasters\RollerCoasters-master\include\glad4.6\include;C:\Project3-RollerCoasters\RollerCoasters-master\include\glm-0.9.8.5\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -129,7 +134,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Project3-RollerCoasters\RollerCoasters-master\include;C:\Project3-RollerCoasters\RollerCoasters-master\include\glad4.6\include;C:\Project3-RollerCoasters\RollerCoasters-master\include\glm-0.9.8.5\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Project3-RollerCoasters\RollerCoasters-master\include\glut;C:\Project3-RollerCoasters\RollerCoasters-master\include;C:\Project3-RollerCoasters\RollerCoasters-master\include\glad4.6\include;C:\Project3-RollerCoasters\RollerCoasters-master\include\glm-0.9.8.5\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ExceptionHandling>Sync</ExceptionHandling>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
