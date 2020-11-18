@@ -243,7 +243,7 @@ void DrawPillar(Pnt3f qt0, Pnt3f qt1, Pnt3f cross_t, Pnt3f orient_t, bool doingS
 
 void DrawTrain(Pnt3f qt0, Pnt3f cross_t, Pnt3f up, Pnt3f forward,bool doingShadows) {
 	if (!doingShadows) {
-		glColor3ub(255, 255, 255);
+		glColor3ub(50, 0, 0);
 	}
 	glBegin(GL_QUADS);
 	glNormal3f(up.x, up.y, up.z);
@@ -427,7 +427,7 @@ void DrawTrainHead(Pnt3f qt0, Pnt3f cross_t, Pnt3f up, Pnt3f forward, bool doing
 	glEnd();
 	//右
 	glBegin(GL_QUADS);
-	glNormal3f(-cross_t.x, -cross_t.y, -cross_t.z);
+	glNormal3f(cross_t.x, cross_t.y, cross_t.z);
 	glVertex3f_Simplify(qt0 + forward * length + cross_t + up * height);
 	glVertex3f_Simplify(qt0 + forward * length + cross_t);
 	glVertex3f_Simplify(qt0 + cross_t);
@@ -808,7 +808,7 @@ void TrainView::drawStuff(bool doingShadows)
 {
 	glPushMatrix();
 	GLUquadric* n = gluNewQuadric();
-	glTranslatef(20, 80, 0);
+	glTranslatef(20, 200, 0);
 	if (!doingShadows)glColor3ub(105, 105, 0);
 	gluSphere(n, 10.0f, 30, 30);
 	gluDeleteQuadric(n);
