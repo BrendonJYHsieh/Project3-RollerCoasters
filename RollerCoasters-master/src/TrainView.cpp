@@ -806,6 +806,13 @@ void TrainView::trainCamView(TrainView* TrainV, float aspect) {
 //========================================================================
 void TrainView::drawStuff(bool doingShadows)
 {
+	glPushMatrix();
+	GLUquadric* n = gluNewQuadric();
+	glTranslatef(20, 80, 0);
+	if (!doingShadows)glColor3ub(105, 105, 0);
+	gluSphere(n, 10.0f, 30, 30);
+	gluDeleteQuadric(n);
+	glPopMatrix();
 	
 	// Draw the control points
 	// don't draw the control points if you're driving 
