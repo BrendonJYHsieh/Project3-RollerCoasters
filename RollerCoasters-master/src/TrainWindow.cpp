@@ -211,7 +211,7 @@ advanceTrain(float dir)
 	// TODO: make this work for your train
 	//#####################################################################
 	if (trainView->tw->arcLength->value()) {
-		m_Track.trainU += 1.0f * speed->value()+ trainView->physical*10;
+		m_Track.trainU += (1.0f * speed->value()+ trainView->physical*10)*dir;
 		if (m_Track.trainU > trainView->Path_Total) {
 			m_Track.trainU -= trainView->Path_Total;
 		}
